@@ -29,8 +29,12 @@ jobs:
                         run: composer fix-cs --ansi
 
                     -
-                        name: 'Outdated Breakpoint'
-                        run: ./bin/jack outdated-breakpoint --ansi --limit 2
+                        name: 'Jack: Outdated Breakpoint'
+                        run: ./bin/jack breakpoint --ansi --limit 2
+
+                    -
+                        name: 'Jack: Open Versions'
+                        run: ./bin/jack open-versions --dry-run --ansi
 
                     -
                         name: 'Tests'
