@@ -1,4 +1,4 @@
-# Jack to raise your dependency version
+# Raise your Dependency Versions with Jack
 
 **Experimental**: Jack is an experimental project under active development. It is not yet stable, may contain bugs or undergo breaking changes. It's build it in the open with the community feedback.
 
@@ -26,23 +26,29 @@ composer require rector/jack --dev
 
 ## Usage
 
-## 1. Let your CI tell you, if there is too many outdated dependencies
+## 1. Too many outdated dependencies? Let your CI tell you
 
 We tend to postpone upgrade and to them in big jumps = once a couple years. The postponing turns upgrades to harder and more costly project. Also, we can face more errors, as some newer version of packages no longer work with our PHP version.
 
-Let CI pay attention to this issue for us. Too many outdated major packages? CI will fail.
+Let CI pay attention to this issue for us.
+
+Too many outdated major packages? CI will fail.
 
 ```bash
 vendor/bin/jack breakpoint
 ```
 
-Default limit of outdated packages is 5. Do you 15 outdated packages? Make it fit your needs - goal of this command is not to get stressed, but to keep raising your dependencies one step at a time:
+<br>
+
+Default limit of outdated packages is 5.
+
+Do you 15 outdated packages? Make it fit your needs - goal of this command is not to get stressed, but **to keep raising your dependencies one step at a time**:
 
 ```bash
 vendor/bin/jack breakpoint --limit 13
 ```
 
-This way, the upgrade will be bring to our focus, if we're lacking behind for too long.
+This way, the upgrade will be come to our focus, if we're lacking behind for way too long.
 No more: "oops, all our dependencies are 3 years old, let's update them all at once" mayhem.
 
 <br>
