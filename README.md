@@ -57,7 +57,7 @@ No more: "oops, all our dependencies are 3 years old, let's update them all at o
 
 ## 2. Open up next versions
 
-We know we're behind the latest versions of our dependencies, but where to start? Which versions should be force to update first? We can get lot of errors if we try to bump wrong end of not.
+We know we're behind the latest versions of our dependencies, but where to start? Which versions should be force to update first? We can get lot of errors if we try to bump wrong end of knot.
 
 Instead, let composer handle it. How? We open-up package versions to the next version:
 
