@@ -1,0 +1,16 @@
+{
+    "name": "rector/jack",
+    "description": "Swiss knife in pocket of every upgrade architect",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.2"
+    },
+    "bin": [
+        "bin/jack"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Rector\\SwissKnife\\": "src"
+        }
+    }
+}

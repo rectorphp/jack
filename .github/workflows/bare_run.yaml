@@ -1,0 +1,23 @@
+name: Bare Run on various PHP versions
+
+on:
+    push:
+        tags:
+            - '*'
+
+jobs:
+    bare_run:
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                php_version: ['7.4', '8.0', '8.2']
+
+        steps:
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    coverage: none
+
+            -   run: composer require rector/jack --dev --ansi
