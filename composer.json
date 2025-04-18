@@ -1,6 +1,6 @@
 {
     "name": "rector/jack",
-    "description": "Push your dependencies up with a jack",
+    "description": "Jack helps you incrementally update your `composer.json` dependencies, ensuring your project stays current without the chaos of outdated packages",
     "license": "MIT",
     "bin": [
         "bin/jack"
