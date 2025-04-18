@@ -40,6 +40,8 @@ With Jack, you upgrade **slowly and steadily**, avoiding the stress of massive, 
 
 Jack offers two powerful commands to keep your dependencies up to date:
 
+<br>
+
 ### 1. Too many outdated dependencies? Let your CI tell you
 
 Postponing upgrades often results in large, risky jumps (e.g., updating every few years). Jack integrates with your CI pipeline to catch outdated dependencies early.
