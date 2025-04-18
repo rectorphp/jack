@@ -89,7 +89,7 @@ This "opens up" versions without forcing updates. If no blockers exist, Composer
 
 Command Options:
 
-- **Limit the number of packages** to process (default: 5):
+**Limit the number of packages** to process (default: 5):
 
 ```bash
 vendor/bin/jack open-versions --limit 3
@@ -97,7 +97,7 @@ vendor/bin/jack open-versions --limit 3
 
 <br>
 
-- **Dry run** to preview changes without modifying `composer.json`:
+**Dry run** to preview changes without modifying `composer.json`:
 
 ```bash
 vendor/bin/jack open-versions --dry-run
@@ -105,7 +105,7 @@ vendor/bin/jack open-versions --dry-run
 
 <br>
 
-- **Update dev dependencies first** for safer, low-risk updates:
+**Update dev dependencies first** for safer, low-risk updates:
 
 ```bash
 vendor/bin/jack open-versions --dev
