@@ -26,6 +26,8 @@ composer require rector/jack --dev
 
 ## Usage
 
+<br>
+
 ## 1. Too many outdated dependencies? Let your CI tell you
 
 We tend to postpone upgrade and to them in big jumps = once a couple years. The postponing turns upgrades to harder and more costly project. Also, we can face more errors, as some newer version of packages no longer work with our PHP version.
@@ -84,13 +86,17 @@ You can limit the range of versions to open up by using the `--limit` option (de
 vendor/bin/jack open-versions --limit 3
 ```
 
+<br>
+
 To try it out without changing the `composer.json`, you can use the `--dry-run` option.
 
 ```bash
 vendor/bin/jack open-versions --dry-run
 ```
 
-It's proven practice to update all dev packages first, as they're low hanging fruit. Just add `--dev` option to the command:
+<br>
+
+It's proven practice to update all dev packages first, as they're safer low hanging fruit. Just add `--dev` option to the command:
 
 ```bash
 vendor/bin/jack open-versions --dev
