@@ -1,4 +1,4 @@
-# Raise your Dependency Versions with Jack
+# Jack: Raise your Dependency Versions
 
 **Experimental**: Jack is an experimental project under active development. It is not yet stable, may contain bugs or undergo breaking changes. It's build it in the open with the community feedback.
 
@@ -10,9 +10,9 @@
 
 <br>
 
-The slow and steady way to raise your `composer.json` dependencies versions.
+Jack helps you incrementally update your `composer.json` dependencies, ensuring your project stays current without the chaos of outdated packages.
 
-No more outdated dependencies without noticing.
+Say goodbye to unnoticed, years-old dependencies!
 
 <br>
 
@@ -24,38 +24,43 @@ composer require rector/jack --dev
 
 <br>
 
-## Usage
+## Why Jack?
+
+Manually upgrading dependencies can be daunting, especially when tackling multiple outdated packages at once. Large upgrades often lead to errors, compatibility issues, and costly delays. Jack automates and simplifies this process by:
+
+- Monitoring outdated dependencies via CI.
+- Gradually opening up package versions for safe updates.
+- Prioritizing low-risk updates (e.g., dev dependencies).
+
+With Jack, you upgrade **slowly and steadily**, avoiding the stress of massive, error-prone dependency overhauls.
 
 <br>
 
-## 1. Too many outdated dependencies? Let your CI tell you
+## Usage
 
-We tend to postpone upgrade and to them in big jumps = once a couple years. The postponing turns upgrades to harder and more costly project. Also, we can face more errors, as some newer version of packages no longer work with our PHP version.
+Jack offers two powerful commands to keep your dependencies up to date:
 
-Let CI pay attention to this issue for us.
+### 1. Too many outdated dependencies? Let your CI tell you
 
-Too many outdated major packages? CI will fail.
+Postponing upgrades often results in large, risky jumps (e.g., updating every few years). Jack integrates with your CI pipeline to catch outdated dependencies early.
+
+Run the `breakpoint` command to check for outdated major packages:
 
 ```bash
 vendor/bin/jack breakpoint
 ```
 
-<br>
-
-Default limit of outdated packages is 5.
-
-Do you 15 outdated packages? Make it fit your needs - goal of this command is not to get stressed, but **to keep raising your dependencies one step at a time**:
+By default, CI fails if there are more than **5 outdated packages**. Customize this limit to suit your project’s needs:
 
 ```bash
 vendor/bin/jack breakpoint --limit 13
 ```
 
-This way, the upgrade will be come to our focus, if we're lacking behind for way too long.
-No more: "oops, all our dependencies are 3 years old, let's update them all at once" mayhem.
+This ensures upgrades stay on your radar without overwhelming you. No more "oops, our dependencies are three years old" moments!
 
 <br>
 
-## 2. Open up next versions
+### 2. Open up Next Versions
 
 We know we're behind the latest versions of our dependencies, but where to start? Which versions should be force to update first? We can get lot of errors if we try to bump wrong end of knot.
 
@@ -76,33 +81,32 @@ Instead, let composer handle it. How? We open-up package versions to the next ve
  }
 ```
 
-Not forcing, just opening up. If composer won't see any blockers, it will update the package to the next version.
+This "opens up" versions without forcing updates. If no blockers exist, Composer will upgrade to the next version.
 
 <br>
 
-You can limit the range of versions to open up by using the `--limit` option (default 5)
+#### Command Options
+
+- **Limit the number of packages** to process (default: 5):
 
 ```bash
 vendor/bin/jack open-versions --limit 3
 ```
 
-<br>
-
-To try it out without changing the `composer.json`, you can use the `--dry-run` option.
+- **Dry run** to preview changes without modifying `composer.json`:
 
 ```bash
 vendor/bin/jack open-versions --dry-run
 ```
 
-<br>
-
-It's proven practice to update all dev packages first, as they're safer low hanging fruit:
+- **Update dev dependencies first** for safer, low-risk updates:
 
 ```bash
 vendor/bin/jack open-versions --dev
 ```
 
-This way we **get slowly and steadily to the next possible version** of our dependencies.
+This approach ensures you **progress steadily** toward the latest dependency versions.
+
 
 <br>
 
