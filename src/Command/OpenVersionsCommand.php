@@ -10,7 +10,6 @@ use Nette\Utils\Strings;
 use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
 use Rector\Jack\Composer\NextVersionResolver;
 use Rector\Jack\Enum\ComposerKey;
-use Rector\Jack\Mapper\OutdatedPackageMapper;
 use Rector\Jack\OutdatedComposerFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
