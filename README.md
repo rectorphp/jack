@@ -96,7 +96,7 @@ vendor/bin/jack open-versions --dry-run
 
 <br>
 
-It's proven practice to update all dev packages first, as they're safer low hanging fruit. Just add `--dev` option to the command:
+It's proven practice to update all dev packages first, as they're safer low hanging fruit:
 
 ```bash
 vendor/bin/jack open-versions --dev
