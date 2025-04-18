@@ -1,8 +1,14 @@
 # Jack to raise your dependency version
 
+**Experimental**: Jack is an experimental project under active development. It is not yet stable, may contain bugs or undergo breaking changes. It's build it in the open with the community feedback.
+
 [![Downloads total](https://img.shields.io/packagist/dt/rector/jack.svg?style=flat-square)](https://packagist.org/packages/rector/jack/stats)
 
-@todo img
+<br>
+
+<img src="/docs/jack.jpg" alt="Jack" width="300" align="center">
+
+<br>
 
 The slow and steady way to raise your `composer.json` dependencies versions.
 
