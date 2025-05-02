@@ -52,6 +52,8 @@ Run the `breakpoint` command to check for outdated major packages:
 vendor/bin/jack breakpoint
 ```
 
+<br>
+
 By default, CI fails if there are more than **5 outdated packages**. Customize this limit to suit your project’s needs:
 
 ```bash
@@ -110,9 +112,6 @@ vendor/bin/jack open-versions --dry-run
 ```bash
 vendor/bin/jack open-versions --dev
 ```
-
-This approach ensures you **progress steadily** toward the latest dependency versions.
-
 
 <br>
 
