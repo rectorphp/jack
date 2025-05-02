@@ -6,11 +6,15 @@
 
 <br>
 
+In real world, "jack" is a tool that helps to raise your heavy car one inch at a time. So you can fix any issues down there and drive safely on journeys to come.
+
+<br>
+
 <img src="/docs/jack.jpg" alt="Jack" width="300" align="center">
 
 <br>
 
-Jack helps you incrementally update your `composer.json` dependencies, ensuring your project stays current without the chaos of outdated packages.
+In Composer world, Jack helps you to raise dependencies one version at a time, safely and steadily.
 
 Say goodbye to unnoticed, years-old dependencies!
 
