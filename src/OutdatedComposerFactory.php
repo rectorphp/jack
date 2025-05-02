@@ -7,6 +7,9 @@ namespace Rector\Jack;
 use Rector\Jack\Mapper\OutdatedPackageMapper;
 use Rector\Jack\ValueObject\OutdatedComposer;
 
+/**
+ * @see \Rector\Jack\Tests\OutdatedComposerFactory\OutdatedComposerFactoryTest
+ */
 final readonly class OutdatedComposerFactory
 {
     public function __construct(
