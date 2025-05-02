@@ -24,20 +24,20 @@ final class ContainerFactory
 
         // console
         $container->singleton(Application::class, function (Container $container): Application {
-            $application = new JackConsoleApplication('Rector Jack');
+            $jackConsoleApplication = new JackConsoleApplication('Rector Jack');
 
             $commandClasses = $this->findCommandClasses();
 
             // register commands
             foreach ($commandClasses as $commandClass) {
                 $command = $container->make($commandClass);
-                $application->add($command);
+                $jackConsoleApplication->add($command);
             }
 
             // remove basic command to make output clear
-            $this->hideDefaultCommands($application);
+            $this->hideDefaultCommands($jackConsoleApplication);
 
-            return $application;
+            return $jackConsoleApplication;
         });
 
         $container->singleton(

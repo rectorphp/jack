@@ -66,11 +66,7 @@ final readonly class OutdatedComposer
     {
         // adds random effect, not to always update by A-Z, as would force too narrow pattern
         // this is also more fun :)
-        if ($onlyDev) {
-            $outdatedPackages = $this->getDevPackages();
-        } else {
-            $outdatedPackages = $this->outdatedPackages;
-        }
+        $outdatedPackages = $onlyDev ? $this->getDevPackages() : $this->outdatedPackages;
 
         shuffle($outdatedPackages);
 
