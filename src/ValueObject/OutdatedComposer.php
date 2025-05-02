@@ -1,68 +1,63 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Rector\Jack\ValueObject;
 
-final readonly class OutdatedComposer
+final class OutdatedComposer
 {
+    /**
+     * @var OutdatedPackage[]
+     * @readonly
+     */
+    private $outdatedPackages;
     /**
      * @param OutdatedPackage[] $outdatedPackages
      */
-    public function __construct(
-        private array $outdatedPackages
-    ) {
-    }
-
-    public function getProdPackagesCount(): int
+    public function __construct(array $outdatedPackages)
     {
-        return count($this->getProdPackages());
+        $this->outdatedPackages = $outdatedPackages;
     }
-
-    public function getDevPackagesCount(): int
+    public function getProdPackagesCount() : int
     {
-        return count($this->getDevPackages());
+        return \count($this->getProdPackages());
     }
-
+    public function getDevPackagesCount() : int
+    {
+        return \count($this->getDevPackages());
+    }
     /**
      * @return OutdatedPackage[]
      */
-    public function getProdPackages(): array
+    public function getProdPackages() : array
     {
-        return array_filter(
-            $this->outdatedPackages,
-            fn (OutdatedPackage $outdatedPackage): bool => $outdatedPackage->isProd()
-        );
+        return \array_filter($this->outdatedPackages, function (\Rector\Jack\ValueObject\OutdatedPackage $outdatedPackage) : bool {
+            return $outdatedPackage->isProd();
+        });
     }
-
     /**
      * @return OutdatedPackage[]
      */
-    public function getDevPackages(): array
+    public function getDevPackages() : array
     {
-        return array_filter(
-            $this->outdatedPackages,
-            fn (OutdatedPackage $outdatedPackage): bool => ! $outdatedPackage->isProd()
-        );
+        return \array_filter($this->outdatedPackages, function (\Rector\Jack\ValueObject\OutdatedPackage $outdatedPackage) : bool {
+            return !$outdatedPackage->isProd();
+        });
     }
-
-    public function count(): int
+    public function count() : int
     {
-        return count($this->outdatedPackages);
+        return \count($this->outdatedPackages);
     }
-
     /**
      * @return OutdatedPackage[]
      */
-    public function getPackages(): array
+    public function getPackages() : array
     {
         return $this->outdatedPackages;
     }
-
     /**
      * @return OutdatedPackage[]
      */
-    public function getPackagesShuffled(bool $onlyDev = false): array
+    public function getPackagesShuffled(bool $onlyDev = \false) : array
     {
         // adds random effect, not to always update by A-Z, as would force too narrow pattern
         // this is also more fun :)
@@ -71,9 +66,7 @@ final readonly class OutdatedComposer
         } else {
             $outdatedPackages = $this->outdatedPackages;
         }
-
-        shuffle($outdatedPackages);
-
+        \shuffle($outdatedPackages);
         return $outdatedPackages;
     }
 }
