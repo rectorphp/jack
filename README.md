@@ -60,7 +60,7 @@ vendor/bin/jack breakpoint
 
 ↓
 
-<img src="/docs/breakpoint-output.png" alt="Jack" width="400" align="center">
+<img src="/docs/breakpoint-output.png" alt="Jack" width="600" align="center">
 
 
 <br>
