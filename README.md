@@ -78,14 +78,20 @@ This ensures upgrades stay on your radar without overwhelming you. No more "oops
 
 We know we're behind the latest versions of our dependencies, but where to start? Which versions should be force to update first? We can get lot of conflicts if we try to bump wrong end of knot.
 
-Instead, let composer handle it. How? We open-up package versions to the next version:
+Instead, let Composer handle it. How? We open-up package versions to the next version:
+
+```bash
+vendor/bin/jack open-versions
+```
+
+This command opens up 5 versions to their next nearest step, e.g.:
 
 ```diff
  {
      "require": {
          "php": "^7.4",
--            "symfony/console": "^5.0"
-+            "symfony/console": "^5.0|^6.0"
+-            "symfony/console": "5.1.*"
++            "symfony/console": "5.2.*|5.2.*"
          },
          "require-dev": {
 -            "phpunit/phpunit": "^9.0"
@@ -95,13 +101,13 @@ Instead, let composer handle it. How? We open-up package versions to the next ve
  }
 ```
 
-This "opens up" 5 versions without forcing updates. If no blockers exist, Composer will upgrade to the next version.
-
-Then we run composer and let it do the work:
+Then we run Composer to do the work:
 
 ```bash
 composer update
 ```
+
+If no blockers exist, Composer will update packages to their next version.
 
 <br>
 
