@@ -11,14 +11,14 @@ use Rector\Jack\Exception\ShouldNotHappenException;
 /**
  * @see \Rector\Jack\Tests\Composer\NextVersionResolver\NextVersionResolverTest
  */
-final class NextVersionResolver
+final readonly class NextVersionResolver
 {
     private const MAJOR = 'major';
 
     private const MINOR = 'minor';
 
     public function __construct(
-        private readonly VersionParser $versionParser
+        private VersionParser $versionParser
     ) {
     }
 
