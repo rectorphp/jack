@@ -20,23 +20,25 @@ Say goodbye to unnoticed, years-old dependencies!
 
 <br>
 
-## Install
-
-```bash
-composer require rector/jack --dev
-```
-
-<br>
-
 ## Why Jack?
 
-Manually upgrading dependencies can be daunting, especially when tackling multiple outdated packages at once. Large upgrades often lead to errors, compatibility issues, and costly delays. Jack automates and simplifies this process by:
+Manually upgrading dependencies can be daunting, especially when tackling multiple outdated packages at once. Large upgrades often lead to errors, compatibility issues, and costly delays.
+
+Jack automates and simplifies this process by:
 
 - Monitoring outdated dependencies via CI.
 - Gradually opening up package versions for safe updates.
 - Prioritizing low-risk updates (e.g., dev dependencies).
 
-With Jack, you upgrade **slowly and steadily**, avoiding the stress of massive, error-prone dependency overhauls.
+<br>
+
+## Install
+
+Rector Jack is downgraded and scoped. It requires **PHP 7.2+** and can be installed on any legacy project.
+
+```bash
+composer require rector/jack --dev
+```
 
 <br>
 
@@ -48,9 +50,9 @@ Jack offers two powerful commands to keep your dependencies up to date:
 
 ### 1. Too many outdated dependencies? Let your CI tell you
 
-Postponing upgrades often results in large, risky jumps (e.g., updating every few years). Jack integrates with your CI pipeline to catch outdated dependencies early.
+Postponing upgrades often results in large, risky jumps (e.g., updating once a 3 years). Jack integrates with your CI pipeline to catch outdated dependencies early.
 
-Run the `breakpoint` command to check for outdated major packages:
+Run the `breakpoint` command to check for **outdated major packages**:
 
 ```bash
 vendor/bin/jack breakpoint
@@ -58,19 +60,23 @@ vendor/bin/jack breakpoint
 
 <br>
 
-By default, CI fails if there are more than **5 outdated packages**. Customize this limit to suit your project’s needs:
+If there are more than 5 major outdated packages, the **CI will fail**.
+
+<br>
+
+Use `--limit` to raise or lower your bar:
 
 ```bash
 vendor/bin/jack breakpoint --limit 3
 ```
 
-This ensures upgrades stay on your radar without overwhelming you. No more "oops, our dependencies are three years old" moments!
+This ensures upgrades stay on your radar without overwhelming you. No more "oops, our 30 dependencies are 5 years old" moments!
 
 <br>
 
 ### 2. Open up Next Versions
 
-We know we're behind the latest versions of our dependencies, but where to start? Which versions should be force to update first? We can get lot of errors if we try to bump wrong end of knot.
+We know we're behind the latest versions of our dependencies, but where to start? Which versions should be force to update first? We can get lot of conflicts if we try to bump wrong end of knot.
 
 Instead, let composer handle it. How? We open-up package versions to the next version:
 
@@ -89,13 +95,17 @@ Instead, let composer handle it. How? We open-up package versions to the next ve
  }
 ```
 
-This "opens up" versions without forcing updates. If no blockers exist, Composer will upgrade to the next version.
+This "opens up" 5 versions without forcing updates. If no blockers exist, Composer will upgrade to the next version.
+
+Then we run composer and let it do the work:
+
+```bash
+composer update
+```
 
 <br>
 
-Command Options:
-
-**Limit the number of packages** to process (default: 5):
+To change the number of packages, use `--limit` option:
 
 ```bash
 vendor/bin/jack open-versions --limit 3
@@ -103,7 +113,7 @@ vendor/bin/jack open-versions --limit 3
 
 <br>
 
-**Dry run** to preview changes without modifying `composer.json`:
+To preview changes without modifying `composer.json`, use:
 
 ```bash
 vendor/bin/jack open-versions --dry-run
@@ -111,7 +121,7 @@ vendor/bin/jack open-versions --dry-run
 
 <br>
 
-**Update dev dependencies first** for safer, low-risk updates:
+Do you want to play it safe? Try low-risk dev packages first:
 
 ```bash
 vendor/bin/jack open-versions --dev
