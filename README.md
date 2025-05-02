@@ -55,7 +55,7 @@ vendor/bin/jack breakpoint
 By default, CI fails if there are more than **5 outdated packages**. Customize this limit to suit your project’s needs:
 
 ```bash
-vendor/bin/jack breakpoint --limit 13
+vendor/bin/jack breakpoint --limit 3
 ```
 
 This ensures upgrades stay on your radar without overwhelming you. No more "oops, our dependencies are three years old" moments!
@@ -77,7 +77,7 @@ Instead, let composer handle it. How? We open-up package versions to the next ve
          },
          "require-dev": {
 -            "phpunit/phpunit": "^9.0"
-+            "phpunit/phpunit": "^10.0"
++            "phpunit/phpunit": "^9.0|^10.0"
          }
      }
  }
