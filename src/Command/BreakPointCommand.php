@@ -43,12 +43,9 @@ final class BreakPointCommand extends Command
         $maxOutdatePackages = (int) $input->getOption('limit');
 
         $symfonyStyle = new SymfonyStyle($input, $output);
-        $symfonyStyle->title('Analyzing "composer.json" for major outdated packages');
+        $symfonyStyle->writeln('<fg=green>Analyzing "composer.json" for major outdated packages</>');
 
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
-
-        $symfonyStyle->success('Done');
-        $symfonyStyle->newLine();
 
         $responseJson = Json::decode($responseJsonContents, true);
         if (! isset($responseJson[ComposerKey::INSTALLED_KEY])) {

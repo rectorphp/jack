@@ -58,6 +58,11 @@ Run the `breakpoint` command to check for **outdated major packages**:
 vendor/bin/jack breakpoint
 ```
 
+↓
+
+<img src="/docs/breakpoint-output.png" alt="Jack" width="400" align="center">
+
+
 <br>
 
 If there are more than 5 major outdated packages, the **CI will fail**.
