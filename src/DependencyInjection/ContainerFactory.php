@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Jack\DependencyInjection;
 
 use Illuminate\Container\Container;
+use Rector\Jack\Console\JackConsoleApplication;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -23,7 +24,7 @@ final class ContainerFactory
 
         // console
         $container->singleton(Application::class, function (Container $container): Application {
-            $application = new Application('Rector Jack');
+            $application = new JackConsoleApplication('Rector Jack');
 
             $commandClasses = $this->findCommandClasses();
 
