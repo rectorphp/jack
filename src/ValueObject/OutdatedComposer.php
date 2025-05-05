@@ -46,17 +46,19 @@ final readonly class OutdatedComposer
         );
     }
 
-    public function count(): int
+    public function count(bool $onlyDev = false): int
     {
-        return count($this->outdatedPackages);
+        $packages = $onlyDev ? $this->getDevPackages() : $this->outdatedPackages;
+
+        return count($packages);
     }
 
     /**
      * @return OutdatedPackage[]
      */
-    public function getPackages(): array
+    public function getPackages(bool $onlyDev = false): array
     {
-        return $this->outdatedPackages;
+        return $onlyDev ? $this->getDevPackages() : $this->outdatedPackages;
     }
 
     /**
