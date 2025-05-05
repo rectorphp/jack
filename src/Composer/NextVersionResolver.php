@@ -1,47 +1,38 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Rector\Jack\Composer;
 
-use Composer\Semver\VersionParser;
-use Nette\Utils\Strings;
+use Jack202505\Composer\Semver\VersionParser;
+use Jack202505\Nette\Utils\Strings;
 use Rector\Jack\Exception\ShouldNotHappenException;
-
 /**
  * @see \Rector\Jack\Tests\Composer\NextVersionResolver\NextVersionResolverTest
  */
-final readonly class NextVersionResolver
+final class NextVersionResolver
 {
+    /**
+     * @readonly
+     * @var \Composer\Semver\VersionParser
+     */
+    private $versionParser;
     private const MAJOR = 'major';
-
     private const MINOR = 'minor';
-
-    public function __construct(
-        private VersionParser $versionParser
-    ) {
+    public function __construct(VersionParser $versionParser)
+    {
+        $this->versionParser = $versionParser;
     }
-
-    public function resolve(string $composerVersion): string
+    public function resolve(string $composerVersion) : string
     {
         $constraint = $this->versionParser->parseConstraints($composerVersion);
-
         $nextBound = $constraint->getUpperBound();
-        $matchVersion = Strings::match(
-            $nextBound->getVersion(),
-            '#^(?<' . self::MAJOR . '>\d+)\.(?<' . self::MINOR . '>\d+)#'
-        );
-
+        $matchVersion = Strings::match($nextBound->getVersion(), '#^(?<' . self::MAJOR . '>\\d+)\\.(?<' . self::MINOR . '>\\d+)#');
         if ($matchVersion === null) {
-            throw new ShouldNotHappenException(
-                sprintf('Unable to parse major and minor value from composer version "%s"', $composerVersion)
-            );
+            throw new ShouldNotHappenException(\sprintf('Unable to parse major and minor value from composer version "%s"', $composerVersion));
         }
-
-        if (str_contains($composerVersion, '*')) {
+        if (\strpos($composerVersion, '*') !== \false) {
             return $matchVersion[self::MAJOR] . '.' . $matchVersion[self::MINOR] . '.*';
         }
-
         return '^' . $matchVersion[self::MAJOR] . '.' . $matchVersion[self::MINOR];
     }
 }
