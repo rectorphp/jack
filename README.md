@@ -79,6 +79,14 @@ This ensures upgrades stay on your radar without overwhelming you. No more "oops
 
 <br>
 
+It's safer to start upgrading dev packages first. You can spot them like this:
+
+```bash
+vendor/bin/jack breakpoint --dev
+```
+
+<br>
+
 ### 2. Open up Next Versions
 
 We know we're behind the latest versions of our dependencies, but where to start? Which versions should be force to update first? We can get lot of conflicts if we try to bump wrong end of knot.

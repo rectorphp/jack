@@ -22,7 +22,8 @@ final class OpenVersionsCommand extends Command
     public function __construct(
         private readonly NextVersionResolver $nextVersionResolver,
         private readonly OutdatedComposerFactory $outdatedComposerFactory,
-        private readonly ComposerOutdatedResponseProvider $composerOutdatedResponseProvider
+        private readonly ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
+        private readonly SymfonyStyle $symfonyStyle
     ) {
         parent::__construct();
     }
@@ -42,15 +43,14 @@ final class OpenVersionsCommand extends Command
     {
         $composerJsonFilePath = getcwd() . '/composer.json';
 
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $symfonyStyle->title('Analyzing "composer.json" for outdated packages');
-        $symfonyStyle->writeln(' This might take 10-30 seconds to finish, depending on your dependency count');
+        $this->symfonyStyle->title('Analyzing "composer.json" for outdated packages');
+        $this->symfonyStyle->writeln(' This might take 10-30 seconds to finish, depending on your dependency count');
 
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
 
         $responseJson = Json::decode($responseJsonContents, true);
         if (! isset($responseJson[ComposerKey::INSTALLED_KEY])) {
-            $symfonyStyle->success('All packages are up to date. You are the best!');
+            $this->symfonyStyle->success('All packages are up to date. You are the best!');
 
             return self::SUCCESS;
         }
@@ -60,7 +60,7 @@ final class OpenVersionsCommand extends Command
             $composerJsonFilePath
         );
 
-        $symfonyStyle->warning(
+        $this->symfonyStyle->warning(
             sprintf(
                 'Found %d outdated package%s',
                 $outdatedComposer->count(),
@@ -68,7 +68,7 @@ final class OpenVersionsCommand extends Command
             )
         );
 
-        $symfonyStyle->listing([
+        $this->symfonyStyle->listing([
             sprintf(
                 '%d prod package%s',
                 $outdatedComposer->getProdPackagesCount(),
@@ -81,8 +81,8 @@ final class OpenVersionsCommand extends Command
             ),
         ]);
 
-        $symfonyStyle->newLine();
-        $symfonyStyle->title('Opening version constraints in "composer.json"');
+        $this->symfonyStyle->newLine();
+        $this->symfonyStyle->title('Opening version constraints in "composer.json"');
 
         $limit = (int) $input->getOption('limit');
         $isDryRun = (bool) $input->getOption('dry-run');
@@ -112,7 +112,7 @@ final class OpenVersionsCommand extends Command
                 $openedVersion
             );
 
-            $symfonyStyle->writeln(sprintf(
+            $this->symfonyStyle->writeln(sprintf(
                 ' * Opened "<fg=green>%s</>" package to "<fg=yellow>%s</>" version',
                 $outdatedPackage->getName(),
                 $openedVersion
@@ -130,7 +130,7 @@ final class OpenVersionsCommand extends Command
             FileSystem::write($composerJsonFilePath, $composerJsonContents . PHP_EOL);
         }
 
-        $symfonyStyle->success(
+        $this->symfonyStyle->success(
             sprintf(
                 '%d packages %s opened up to the next nearest version.%s%s "composer update" to push versions up',
                 $openedPackageCount,
