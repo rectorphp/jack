@@ -76,7 +76,10 @@ final readonly class OutdatedComposer
         if ($packagePrefix !== null) {
             $outdatedPackages = array_filter(
                 $outdatedPackages,
-                fn (OutdatedPackage $outdatedPackage): bool => str_starts_with($outdatedPackage->getName(), $packagePrefix)
+                fn (OutdatedPackage $outdatedPackage): bool => str_starts_with(
+                    $outdatedPackage->getName(),
+                    $packagePrefix
+                )
             );
         }
 

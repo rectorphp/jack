@@ -7,7 +7,7 @@ namespace Rector\Jack\DependencyInjection;
 use Illuminate\Container\Container;
 use Rector\Jack\Console\JackConsoleApplication;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
@@ -42,7 +42,7 @@ final class ContainerFactory
 
         $container->singleton(
             SymfonyStyle::class,
-            static fn (): SymfonyStyle => new SymfonyStyle(new ArrayInput([]), new ConsoleOutput())
+            static fn (): SymfonyStyle => new SymfonyStyle(new ArgvInput(), new ConsoleOutput())
         );
 
         return $container;

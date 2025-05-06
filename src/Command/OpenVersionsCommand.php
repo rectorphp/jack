@@ -110,8 +110,10 @@ final class OpenVersionsCommand extends Command
             // replace using regex, to keep original composer.json format
             $composerJsonContents = Strings::replace(
                 $composerJsonContents,
+                // find
                 sprintf('#"%s": "(.*?)"#', $outdatedPackage->getName()),
-                $openedVersion
+                // replace
+                sprintf('"%s": "%s"', $outdatedPackage->getName(), $openedVersion)
             );
 
             $this->symfonyStyle->writeln(sprintf(
