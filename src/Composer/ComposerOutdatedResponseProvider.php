@@ -53,7 +53,7 @@ final class ComposerOutdatedResponseProvider
     {
         $projectComposerHash = $this->resolveProjectComposerHash();
         if ($projectComposerHash) {
-            // load from cache, temporarily - @todo cache on json hash + week timeout
+            // load from cache if we already made the analysis
             return sys_get_temp_dir() . '/jack/composer-outdated-' . $projectComposerHash . '.json';
         }
 

@@ -37,6 +37,7 @@ final class OpenVersionsCommand extends Command
         $this->addOption('limit', null, InputOption::VALUE_REQUIRED, 'How many packages to open-up', 5);
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Without any "composer.json" changes');
         $this->addOption('dev', null, InputOption::VALUE_NONE, 'Focus on dev packages only');
+        $this->addOption('package-prefix', null, InputOption::VALUE_REQUIRED, 'Name prefix to filter packages by');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
