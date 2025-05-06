@@ -40,11 +40,6 @@ final class ContainerFactory
             return $jackConsoleApplication;
         });
 
-        $container->singleton(
-            SymfonyStyle::class,
-            static fn (): SymfonyStyle => new SymfonyStyle(new ArgvInput(), new ConsoleOutput())
-        );
-
         return $container;
     }
 

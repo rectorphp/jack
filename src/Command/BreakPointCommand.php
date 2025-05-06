@@ -17,7 +17,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class BreakPointCommand extends Command
 {
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle,
         private readonly OutdatedComposerFactory $outdatedComposerFactory,
         private readonly ComposerOutdatedResponseProvider $composerOutdatedResponseProvider
     ) {
@@ -42,16 +41,18 @@ final class BreakPointCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $symfonyStyle = new SymfonyStyle($input, $output);
+
         $maxOutdatePackages = (int) $input->getOption('limit');
         $onlyDev = (bool) $input->getOption('dev');
 
-        $this->symfonyStyle->writeln('<fg=green>Analyzing "composer.json" for major outdated packages</>');
+        $symfonyStyle->writeln('<fg=green>Analyzing "composer.json" for major outdated packages</>');
 
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
 
         $responseJson = Json::decode($responseJsonContents, true);
         if (! isset($responseJson[ComposerKey::INSTALLED_KEY])) {
-            $this->symfonyStyle->success('All packages are up to date');
+            $symfonyStyle->success('All packages are up to date');
 
             return self::SUCCESS;
         }
@@ -62,7 +63,7 @@ final class BreakPointCommand extends Command
             $composerJsonFilePath
         );
 
-        $this->symfonyStyle->title(
+        $symfonyStyle->title(
             sprintf(
                 'Found %d outdated package%s',
                 $outdatedComposer->count($onlyDev),
@@ -71,25 +72,25 @@ final class BreakPointCommand extends Command
         );
 
         foreach ($outdatedComposer->getPackages($onlyDev) as $outdatedPackage) {
-            $this->symfonyStyle->writeln(
+            $symfonyStyle->writeln(
                 sprintf('The "<fg=green>%s</>" package is outdated', $outdatedPackage->getName())
             );
 
-            $this->symfonyStyle->writeln(sprintf(
+            $symfonyStyle->writeln(sprintf(
                 ' * Your version %s is <fg=%s>%s</>',
                 $outdatedPackage->getCurrentVersion(),
                 $outdatedPackage->isVeryOld() ? 'red' : 'yellow',
                 $outdatedPackage->getCurrentVersionAge(),
             ));
 
-            $this->symfonyStyle->writeln(sprintf(' * Bump to %s', $outdatedPackage->getLatestVersion()));
-            $this->symfonyStyle->newLine();
+            $symfonyStyle->writeln(sprintf(' * Bump to %s', $outdatedPackage->getLatestVersion()));
+            $symfonyStyle->newLine();
         }
 
-        $this->symfonyStyle->newLine();
+        $symfonyStyle->newLine();
         if ($outdatedComposer->count() >= $maxOutdatePackages) {
             // to much → fail
-            $this->symfonyStyle->error(sprintf(
+            $symfonyStyle->error(sprintf(
                 'There %s %d outdated package%s. Update couple of them to get under %d limit',
                 $outdatedComposer->count() > 1 ? 'are' : 'is',
                 $outdatedComposer->count(),
@@ -102,7 +103,7 @@ final class BreakPointCommand extends Command
 
         if ($outdatedComposer->count() > max(1, $maxOutdatePackages - 5)) {
             // to much → fail
-            $this->symfonyStyle->warning(sprintf(
+            $symfonyStyle->warning(sprintf(
                 'There are %d outdated packages. Soon, the count will go over %d limit and this job will fail.%sUpgrade in time',
                 $outdatedComposer->count(),
                 $maxOutdatePackages,
@@ -113,7 +114,7 @@ final class BreakPointCommand extends Command
         }
 
         // to many → fail
-        $this->symfonyStyle->success(
+        $symfonyStyle->success(
             sprintf('Still far away from limit %d. Good job keeping your project up to date!', $maxOutdatePackages)
         );
 
