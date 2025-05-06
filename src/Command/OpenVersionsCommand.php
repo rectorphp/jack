@@ -43,8 +43,7 @@ final class OpenVersionsCommand extends Command
     {
         $composerJsonFilePath = getcwd() . '/composer.json';
 
-        $this->symfonyStyle->title('Analyzing "composer.json" for outdated packages');
-        $this->symfonyStyle->writeln(' This might take 10-30 seconds to finish, depending on your dependency count');
+        $this->symfonyStyle->writeln('<fg=green>Analyzing "composer.json" for outdated packages</>');
 
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
 
@@ -60,26 +59,27 @@ final class OpenVersionsCommand extends Command
             $composerJsonFilePath
         );
 
-        $this->symfonyStyle->warning(
+        $this->symfonyStyle->newLine();
+
+        $this->symfonyStyle->writeln(
             sprintf(
-                'Found %d outdated package%s',
+                'Found <fg=yellow>%d outdated package%s</>',
                 $outdatedComposer->count(),
                 $outdatedComposer->count() === 1 ? '' : 's'
             )
         );
 
-        $this->symfonyStyle->listing([
-            sprintf(
-                '%d prod package%s',
-                $outdatedComposer->getProdPackagesCount(),
-                $outdatedComposer->getProdPackagesCount() === 1 ? '' : 's'
-            ),
-            sprintf(
-                '%d dev package%s',
-                $outdatedComposer->getDevPackagesCount(),
-                $outdatedComposer->getDevPackagesCount() === 1 ? '' : 's'
-            ),
-        ]);
+        $this->symfonyStyle->writeln(sprintf(
+            ' * %d prod package%s',
+            $outdatedComposer->getProdPackagesCount(),
+            $outdatedComposer->getProdPackagesCount() === 1 ? '' : 's'
+        ));
+
+        $this->symfonyStyle->writeln(sprintf(
+            ' * %d dev package%s',
+            $outdatedComposer->getDevPackagesCount(),
+            $outdatedComposer->getDevPackagesCount() === 1 ? '' : 's'
+        ));
 
         $this->symfonyStyle->newLine();
         $this->symfonyStyle->title('Opening version constraints in "composer.json"');
