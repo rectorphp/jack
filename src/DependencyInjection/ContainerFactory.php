@@ -7,9 +7,6 @@ namespace Rector\Jack\DependencyInjection;
 use Illuminate\Container\Container;
 use Rector\Jack\Console\JackConsoleApplication;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Webmozart\Assert\Assert;
 
