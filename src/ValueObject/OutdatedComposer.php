@@ -64,13 +64,21 @@ final readonly class OutdatedComposer
     /**
      * @return OutdatedPackage[]
      */
-    public function getPackagesShuffled(bool $onlyDev = false): array
+    public function getPackagesShuffled(bool $onlyDev, ?string $packagePrefix): array
     {
         // adds random effect, not to always update by A-Z, as would force too narrow pattern
         // this is also more fun :)
         $outdatedPackages = $onlyDev ? $this->getDevPackages() : $this->outdatedPackages;
 
         shuffle($outdatedPackages);
+
+        // filter only package starting with specific prefix
+        if ($packagePrefix !== null) {
+            $outdatedPackages = array_filter(
+                $outdatedPackages,
+                fn (OutdatedPackage $outdatedPackage): bool => str_starts_with($outdatedPackage->getName(), $packagePrefix)
+            );
+        }
 
         return $outdatedPackages;
     }

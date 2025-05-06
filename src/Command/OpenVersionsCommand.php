@@ -88,10 +88,11 @@ final class OpenVersionsCommand extends Command
         $limit = (int) $input->getOption('limit');
         $isDryRun = (bool) $input->getOption('dry-run');
         $onlyDev = (bool) $input->getOption('dev');
+        $packagePrefix = $input->getOption('package-prefix');
 
         $composerJsonContents = FileSystem::read($composerJsonFilePath);
 
-        $outdatedPackages = $outdatedComposer->getPackagesShuffled($onlyDev);
+        $outdatedPackages = $outdatedComposer->getPackagesShuffled($onlyDev, $packagePrefix);
 
         $openedPackageCount = 0;
         foreach ($outdatedPackages as $outdatedPackage) {

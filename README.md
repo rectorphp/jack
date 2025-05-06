@@ -104,7 +104,7 @@ This command opens up 5 versions to their next nearest step, e.g.:
      "require": {
          "php": "^7.4",
 -            "symfony/console": "5.1.*"
-+            "symfony/console": "5.2.*|5.2.*"
++            "symfony/console": "5.1.*|5.2.*"
          },
          "require-dev": {
 -            "phpunit/phpunit": "^9.0"
@@ -128,6 +128,14 @@ To change the number of packages, use `--limit` option:
 
 ```bash
 vendor/bin/jack open-versions --limit 3
+```
+
+<br>
+
+To upgrade only specific group of packages, use ``--package-prefix` option:
+
+```bash
+vendor/bin/jack open-versions --package-prefix symfony
 ```
 
 <br>
