@@ -39,11 +39,11 @@ final class ComposerOutdatedResponseProvider
     private function resolveProjectComposerHash(): ?string
     {
         if (file_exists(getcwd() . '/composer.lock')) {
-            return sha1(getcwd() . '/composer.lock');
+            return md5_file(getcwd() . '/composer.lock');
         }
 
         if (file_exists(getcwd() . '/composer.json')) {
-            return getcwd() . '/composer.json';
+            return md5_file(getcwd() . '/composer.json');
         }
 
         return null;
