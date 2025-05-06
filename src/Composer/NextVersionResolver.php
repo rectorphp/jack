@@ -22,7 +22,7 @@ final readonly class NextVersionResolver
     ) {
     }
 
-    public function resolve(string $composerVersion): string
+    public function resolve(string $packageName, string $composerVersion): string
     {
         $constraint = $this->versionParser->parseConstraints($composerVersion);
 
@@ -38,7 +38,8 @@ final readonly class NextVersionResolver
             );
         }
 
-        if (str_contains($composerVersion, '*')) {
+        // special case for "symfony/*" packages as version jump is huge there
+        if (str_contains($composerVersion, '*') || str_starts_with($packageName, 'symfony/')) {
             return $matchVersion[self::MAJOR] . '.' . $matchVersion[self::MINOR] . '.*';
         }
 

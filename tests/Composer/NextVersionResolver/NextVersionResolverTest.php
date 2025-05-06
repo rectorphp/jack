@@ -20,9 +20,9 @@ final class NextVersionResolverTest extends AbstractTestCase
     }
 
     #[DataProvider('provideData')]
-    public function test(string $composerVersion, string $expectedVersion): void
+    public function test(string $packageName, string $composerVersion, string $expectedVersion): void
     {
-        $nextVersion = $this->nextVersionResolver->resolve($composerVersion);
+        $nextVersion = $this->nextVersionResolver->resolve($packageName, $composerVersion);
         $this->assertSame($expectedVersion, $nextVersion);
     }
 
@@ -31,8 +31,11 @@ final class NextVersionResolverTest extends AbstractTestCase
      */
     public static function provideData(): iterable
     {
-        yield ['^1.0', '^2.0'];
-        yield ['2.2.*', '2.3.*'];
-        yield ['4.*', '5.0.*'];
+        yield ['some/package', '^1.0', '^2.0'];
+        yield ['some/package', '2.2.*', '2.3.*'];
+        yield ['some/package', '4.*', '5.0.*'];
+
+        // special cases
+        yield ['symfony/console', '^3.4', '4.0.*'];
     }
 }

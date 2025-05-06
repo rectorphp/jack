@@ -102,7 +102,7 @@ final class OpenVersionsCommand extends Command
             }
 
             // convert composer version to next version
-            $nextVersion = $this->nextVersionResolver->resolve($composerVersion);
+            $nextVersion = $this->nextVersionResolver->resolve($outdatedPackage->getName(), $composerVersion);
             $openedVersion = $composerVersion . '|' . $nextVersion;
 
             // replace using regex, to keep original composer.json format
