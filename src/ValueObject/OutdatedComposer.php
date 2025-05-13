@@ -74,7 +74,7 @@ final readonly class OutdatedComposer
 
         // filter only package starting with specific prefix
         if ($packagePrefix !== null) {
-            $outdatedPackages = array_filter(
+            return array_filter(
                 $outdatedPackages,
                 fn (OutdatedPackage $outdatedPackage): bool => str_starts_with(
                     $outdatedPackage->getName(),

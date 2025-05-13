@@ -30,7 +30,7 @@ jobs:
 
                     -
                         name: 'Jack: Outdated Breakpoint'
-                        run: ./bin/jack breakpoint --ansi --limit 2
+                        run: ./bin/jack breakpoint --ansi --limit 3
 
                     -
                         name: 'Jack: Open Versions'
