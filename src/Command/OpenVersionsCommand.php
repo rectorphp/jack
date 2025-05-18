@@ -6,10 +6,10 @@ namespace Rector\Jack\Command;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
-use Nette\Utils\Strings;
 use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
 use Rector\Jack\Composer\NextVersionResolver;
 use Rector\Jack\Enum\ComposerKey;
+use Rector\Jack\FileSystem\ComposerJsonPackageVersionUpdater;
 use Rector\Jack\OutdatedComposerFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -109,12 +109,10 @@ final class OpenVersionsCommand extends Command
             $openedVersion = $composerVersion . '|' . $nextVersion;
 
             // replace using regex, to keep original composer.json format
-            $composerJsonContents = Strings::replace(
+            $composerJsonContents = ComposerJsonPackageVersionUpdater::update(
                 $composerJsonContents,
-                // find
-                sprintf('#"%s": "(.*?)"#', $outdatedPackage->getName()),
-                // replace
-                sprintf('"%s": "%s"', $outdatedPackage->getName(), $openedVersion)
+                $outdatedPackage->getName(),
+                $openedVersion
             );
 
             $symfonyStyle->writeln(sprintf(
@@ -132,7 +130,7 @@ final class OpenVersionsCommand extends Command
 
         if ($isDryRun === false) {
             // update composer.json file, only if no --dry-run
-            FileSystem::write($composerJsonFilePath, $composerJsonContents . PHP_EOL);
+            FileSystem::write($composerJsonFilePath, $composerJsonContents . PHP_EOL, null);
         }
 
         $symfonyStyle->success(
