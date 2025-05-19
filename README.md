@@ -156,4 +156,45 @@ vendor/bin/jack open-versions --dev
 
 <br>
 
+### 3. Raise to Installed Versions
+
+Sometimes, we get to an opposite situation. Our dependencies are quite new, but our `composer.json` is a outdated. We can see this e.g. in PHPStorm:
+
+<img src="/docs/composer-outdated-install.png" alt="Outdated composer.json" width="300" align="center">
+
+Here we can see that:
+
+* `illuminate/container` 12.0 is allowed, but we already use 12.4
+* `symfony/finder` 6.4 is allowed, but we already use 7.2
+
+If someone runs `composer update`, they might get unnecessary older dependencies than we can handle. Instead, we should raise our `composer.json` to the installed versions:
+
+```diff
+ {
+     "require": {
+         "php": "^7.4",
+-        "illuminate/container": "^12.0",
++        "illuminate/container": "^12.4",
+         // ...
+-        "symfony/finder": "^6.4|^7.2",
++        "symfony/finder": "^7.2",
+         // ...
+     }
+ }
+```
+
+That's exactly what following command does:
+
+```bash
+vendor/bin/jack raise-to-installed
+```
+
+To see changes first without applying, use again `--dry-run`:
+
+```bash
+vendor/bin/jack raise-to-installed --dry-run
+```
+
+<br>
+
 Happy coding!

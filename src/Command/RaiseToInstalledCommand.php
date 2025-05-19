@@ -24,7 +24,7 @@ final class RaiseToInstalledCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('raise-to-lock');
+        $this->setName('raise-to-installed');
 
         $this->setDescription(
             'Raise your version in "composer.json" to installed one to get the latest version available in any composer update'
