@@ -48,7 +48,7 @@ Jack offers two powerful commands to keep your dependencies up to date:
 
 <br>
 
-### 1. Too many outdated dependencies? Let your CI tell you
+## 1. Too many outdated dependencies? Let your CI tell you
 
 Postponing upgrades often results in large, risky jumps (e.g., updating once a 3 years). Jack integrates with your CI pipeline to catch outdated dependencies early.
 
@@ -87,7 +87,7 @@ vendor/bin/jack breakpoint --dev
 
 <br>
 
-### 2. Open up Next Versions
+## 2. Open up Next Versions
 
 We know we're behind the latest versions of our dependencies, but where to start? Which versions should be force to update first? We can get lot of conflicts if we try to bump wrong end of knot.
 
@@ -152,7 +152,7 @@ vendor/bin/jack open-versions --dev
 
 <br>
 
-### 3. Raise to Installed Versions
+## 3. Raise to Installed Versions
 
 Sometimes, we get to an opposite situation. Our dependencies are quite new, but our `composer.json` is a outdated. We can see this e.g. in PHPStorm:
 
