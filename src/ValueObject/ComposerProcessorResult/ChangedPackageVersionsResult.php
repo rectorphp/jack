@@ -1,33 +1,37 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Rector\Jack\ValueObject\ComposerProcessorResult;
 
 use Rector\Jack\ValueObject\ChangedPackageVersion;
-use Webmozart\Assert\Assert;
-
+use Jack202505\Webmozart\Assert\Assert;
 final class ChangedPackageVersionsResult
 {
     /**
+     * @var string
+     */
+    private $composerJsonContents;
+    /**
+     * @var ChangedPackageVersion[]
+     */
+    private $changedPackageVersions;
+    /**
      * @param ChangedPackageVersion[] $changedPackageVersions
      */
-    public function __construct(
-        private string $composerJsonContents,
-        private array $changedPackageVersions,
-    ) {
+    public function __construct(string $composerJsonContents, array $changedPackageVersions)
+    {
+        $this->composerJsonContents = $composerJsonContents;
+        $this->changedPackageVersions = $changedPackageVersions;
         Assert::allIsInstanceOf($changedPackageVersions, ChangedPackageVersion::class);
     }
-
-    public function getComposerJsonContents(): string
+    public function getComposerJsonContents() : string
     {
         return $this->composerJsonContents;
     }
-
     /**
      * @return ChangedPackageVersion[]
      */
-    public function getChangedPackageVersions(): array
+    public function getChangedPackageVersions() : array
     {
         return $this->changedPackageVersions;
     }
