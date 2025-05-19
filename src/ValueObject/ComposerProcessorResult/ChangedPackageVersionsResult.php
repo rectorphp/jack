@@ -7,7 +7,7 @@ namespace Rector\Jack\ValueObject\ComposerProcessorResult;
 use Rector\Jack\ValueObject\ChangedPackageVersion;
 use Webmozart\Assert\Assert;
 
-final class RaiseToInstalledResult
+final class ChangedPackageVersionsResult
 {
     /**
      * @param ChangedPackageVersion[] $changedPackageVersions

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Jack\ComposerProcessor;
 
 use Composer\Semver\Comparator;
@@ -9,7 +11,7 @@ use Rector\Jack\Composer\InstalledVersionResolver;
 use Rector\Jack\Composer\VersionComparator;
 use Rector\Jack\FileSystem\ComposerJsonPackageVersionUpdater;
 use Rector\Jack\ValueObject\ChangedPackageVersion;
-use Rector\Jack\ValueObject\ComposerProcessorResult\RaiseToInstalledResult;
+use Rector\Jack\ValueObject\ComposerProcessorResult\ChangedPackageVersionsResult;
 
 /**
  * @see \Rector\Jack\Tests\ComposerProcessor\RaiseToInstalledComposerProcessor\RaiseToInstalledComposerProcessorTest
@@ -22,7 +24,7 @@ final class RaiseToInstalledComposerProcessor
     ) {
     }
 
-    public function process(string $composerJsonContents): RaiseToInstalledResult
+    public function process(string $composerJsonContents): ChangedPackageVersionsResult
     {
         $installedPackagesToVersions = $this->installedVersionResolver->resolve();
 
@@ -115,6 +117,6 @@ final class RaiseToInstalledComposerProcessor
             $changedPackageVersions[] = new ChangedPackageVersion($packageName, $packageVersion, $newRequiredVersion);
         }
 
-        return new RaiseToInstalledResult($composerJsonContents, $changedPackageVersions);
+        return new ChangedPackageVersionsResult($composerJsonContents, $changedPackageVersions);
     }
 }

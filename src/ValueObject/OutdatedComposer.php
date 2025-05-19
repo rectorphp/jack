@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Jack\ValueObject;
 
+use Webmozart\Assert\Assert;
+
 final readonly class OutdatedComposer
 {
     /**
@@ -12,6 +14,7 @@ final readonly class OutdatedComposer
     public function __construct(
         private array $outdatedPackages
     ) {
+        Assert::allIsInstanceOf($outdatedPackages, OutdatedPackage::class);
     }
 
     public function getProdPackagesCount(): int
