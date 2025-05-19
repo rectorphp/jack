@@ -132,7 +132,7 @@ vendor/bin/jack open-versions --limit 3
 
 <br>
 
-To upgrade only specific group of packages, use ``--package-prefix` option:
+To upgrade only specific group of packages, use `--package-prefix` option:
 
 ```bash
 vendor/bin/jack open-versions --package-prefix symfony
