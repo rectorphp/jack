@@ -163,7 +163,9 @@ Here we can see that:
 * `illuminate/container` 12.0 is allowed, but we already use 12.14
 * `symfony/finder` 6.4 is allowed, but we already use 7.2
 
-If someone runs `composer update`, they might get unnecessary older dependencies than we can handle. Instead, we should raise our `composer.json` to the installed versions:
+If someone runs `composer update`, they might get unnecessary older dependencies than we can handle. Also, we're self-deprecating out project by signalling old dependencies we don't even use.
+
+Instead, we should raise our `composer.json` to the installed versions:
 
 ```diff
  {
