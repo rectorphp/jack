@@ -156,7 +156,7 @@ vendor/bin/jack open-versions --dev
 
 Sometimes, we get to an opposite situation. Our dependencies are quite new, but our `composer.json` is a outdated. We can see this e.g. in PHPStorm:
 
-<img src="/docs/composer-outdated-install.png" alt="Outdated composer.json" width="300" align="center">
+<img src="/docs/composer-outdated-install.png" alt="Outdated composer.json" width="450" align="center">
 
 Here we can see that:
 
