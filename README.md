@@ -1,4 +1,4 @@
-# Jack: Raise your Dependency Versions
+# Jack: Raise your Dependencies Safely
 
 **Experimental**: Jack is an experimental project under active development. It is not yet stable, may contain bugs or undergo breaking changes. It's build it in the open with the community feedback.
 
