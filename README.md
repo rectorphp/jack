@@ -40,15 +40,11 @@ Rector Jack is downgraded and scoped. It requires **PHP 7.2+** and can be instal
 composer require rector/jack --dev
 ```
 
-<br>
-
-## Usage
-
-Jack offers two powerful commands to keep your dependencies up to date:
+Then, pick from three powerful commands:
 
 <br>
 
-## 1. Too many outdated dependencies? Let your CI tell you
+## 1. Too many Outdated Dependencies? Let CI tell us
 
 Postponing upgrades often results in large, risky jumps (e.g., updating once a 3 years). Jack integrates with your CI pipeline to catch outdated dependencies early.
 
