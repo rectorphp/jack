@@ -6,9 +6,8 @@ namespace Rector\Jack\Command;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
-use Nette\Utils\Strings;
 use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
-use Rector\Jack\Composer\NextVersionResolver;
+use Rector\Jack\ComposerProcessor\OpenVersionsComposerProcessor;
 use Rector\Jack\Enum\ComposerKey;
 use Rector\Jack\OutdatedComposerFactory;
 use Symfony\Component\Console\Command\Command;
@@ -20,9 +19,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class OpenVersionsCommand extends Command
 {
     public function __construct(
-        private readonly NextVersionResolver $nextVersionResolver,
         private readonly OutdatedComposerFactory $outdatedComposerFactory,
         private readonly ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
+        private readonly OpenVersionsComposerProcessor $openVersionsComposerProcessor,
     ) {
         parent::__construct();
     }
@@ -93,57 +92,39 @@ final class OpenVersionsCommand extends Command
 
         $composerJsonContents = FileSystem::read($composerJsonFilePath);
 
-        $outdatedPackages = $outdatedComposer->getPackagesShuffled($onlyDev, $packagePrefix);
+        $changedPackageVersionsResult = $this->openVersionsComposerProcessor->process(
+            $composerJsonContents,
+            $outdatedComposer,
+            $limit,
+            $onlyDev,
+            $packagePrefix
+        );
 
-        $openedPackageCount = 0;
-        foreach ($outdatedPackages as $outdatedPackage) {
-            $composerVersion = $outdatedPackage->getComposerVersion();
-
-            // already filled with open version
-            if (str_contains($composerVersion, '|')) {
-                continue;
-            }
-
-            // convert composer version to next version
-            $nextVersion = $this->nextVersionResolver->resolve($outdatedPackage->getName(), $composerVersion);
-            $openedVersion = $composerVersion . '|' . $nextVersion;
-
-            // replace using regex, to keep original composer.json format
-            $composerJsonContents = Strings::replace(
-                $composerJsonContents,
-                // find
-                sprintf('#"%s": "(.*?)"#', $outdatedPackage->getName()),
-                // replace
-                sprintf('"%s": "%s"', $outdatedPackage->getName(), $openedVersion)
-            );
-
-            $symfonyStyle->writeln(sprintf(
-                ' * Opened "<fg=green>%s</>" package to "<fg=yellow>%s</>" version',
-                $outdatedPackage->getName(),
-                $openedVersion
-            ));
-
-            ++$openedPackageCount;
-            if ($openedPackageCount >= $limit) {
-                // we've reached the limit, so we can stop
-                break;
-            }
-        }
+        $openedPackages = $changedPackageVersionsResult->getChangedPackageVersions();
+        $changedComposerJson = $changedPackageVersionsResult->getComposerJsonContents();
 
         if ($isDryRun === false) {
             // update composer.json file, only if no --dry-run
-            FileSystem::write($composerJsonFilePath, $composerJsonContents . PHP_EOL);
+            FileSystem::write($composerJsonFilePath, $changedComposerJson . PHP_EOL, null);
         }
 
         $symfonyStyle->success(
             sprintf(
                 '%d packages %s opened up to the next nearest version.%s%s "composer update" to push versions up',
-                $openedPackageCount,
+                count($openedPackages),
                 $isDryRun ? 'would be (is "--dry-run")' : 'were',
                 PHP_EOL,
                 $isDryRun ? 'Then you would run' : 'Now run'
             )
         );
+
+        foreach ($openedPackages as $openedPackage) {
+            $symfonyStyle->writeln(sprintf(
+                ' * Opened "<fg=green>%s</>" package to "<fg=yellow>%s</>" version',
+                $openedPackage->getPackageName(),
+                $openedPackage->getNewVersion()
+            ));
+        }
 
         return self::SUCCESS;
     }
