@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Command;
 
-use Composer\Semver\Comparator;
-use Composer\Semver\VersionParser;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
-use Rector\Jack\FileSystem\ComposerJsonPackageVersionUpdater;
-use Rector\Jack\Utils\JsonFileLoader;
+use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
@@ -19,7 +17,7 @@ use Webmozart\Assert\Assert;
 final class RaiseToInstalledCommand extends Command
 {
     public function __construct(
-        private readonly VersionParser $versionParser
+        private readonly RaiseToInstalledComposerProcessor $raiseToInstalledComposerProcessor,
     ) {
         parent::__construct();
     }
@@ -32,133 +30,60 @@ final class RaiseToInstalledCommand extends Command
             'Raise your version in "composer.json" to installed one to get the latest version available in any composer update'
         );
 
-        // @todo add dry-run mode
+        $this->addOption(
+            'dry-run',
+            null,
+            InputOption::VALUE_NONE,
+            'Only show diff of "composer.json" changes, do not write the file'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
+        $isDryRun = (bool) $input->getOption('dry-run');
 
         $symfonyStyle->writeln('<fg=green>Analyzing "/vendor/composer/installed.json" for versions</>');
-
-        $installedPackagesToVersions = $this->resolveInstalledPackagesToVersions();
 
         // load composer.json and replace versions in "require" and "require-dev",
         $composerJsonFilePath = getcwd() . '/composer.json';
 
         Assert::fileExists($composerJsonFilePath);
         $composerJsonContents = FileSystem::read($composerJsonFilePath);
-        $composerJson = Json::decode($composerJsonContents, true);
 
-        $hasChanged = false;
+        $raiseToInstalledResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
 
-        // iterate require and require-dev sections and check if installed version is newer one than in composer.json
-        // if so, replace it
-        foreach ($composerJson['require'] ?? [] as $packageName => $packageVersion) {
-            if (! isset($installedPackagesToVersions[$packageName])) {
-                continue;
-            }
-
-            $installedVersion = $installedPackagesToVersions[$packageName];
-
-            // special case for unions
-            if (str_contains((string) $packageVersion, '|')) {
-                $passingVersionKeys = [];
-
-                $unionPackageVersions = explode('|', (string) $packageVersion);
-                foreach ($unionPackageVersions as $key => $unionPackageVersion) {
-                    $unionPackageConstraint = $this->versionParser->parseConstraints($unionPackageVersion);
-
-                    if (Comparator::greaterThanOrEqualTo(
-                        $installedVersion,
-                        $unionPackageConstraint->getLowerBound()
-                            ->getVersion()
-                    )) {
-                        $passingVersionKeys[] = $key;
-                    }
-                }
-
-                // nothing we can do, as lower union version is passing
-                if ($passingVersionKeys === [0]) {
-                    continue;
-                }
-
-                // higher version is meet, let's drop the lower one
-                if ($passingVersionKeys === [0, 1]) {
-                    $newPackageVersion = $unionPackageVersions[1];
-
-                    $composerJsonContents = ComposerJsonPackageVersionUpdater::update(
-                        $composerJsonContents,
-                        $packageName,
-                        $newPackageVersion
-                    );
-
-                    $hasChanged = true;
-                    continue;
-                }
-            }
-
-            $normalizedInstalledVersion = $this->versionParser->normalize($installedVersion);
-            $installedPackageConstraint = $this->versionParser->parseConstraints($packageVersion);
-
-            $normalizedConstraintVersion = $this->versionParser->normalize(
-                $installedPackageConstraint->getLowerBound()
-                    ->getVersion()
-            );
-
-            // remove "-dev" suffix
-            $normalizedConstraintVersion = str_replace('-dev', '', $normalizedConstraintVersion);
-
-            // all equal
-            if ($normalizedConstraintVersion === $normalizedInstalledVersion) {
-                continue;
-            }
-
-            [$major, $minor, $patch] = explode('.', $normalizedInstalledVersion);
-
-            $newRequiredVersion = sprintf('^%s.%s', $major, $minor);
-
-            // lets update
-            $composerJsonContents = ComposerJsonPackageVersionUpdater::update(
-                $composerJsonContents,
-                $packageName,
-                $newRequiredVersion
-            );
-
-            $hasChanged = true;
-            continue;
-            // focus on minor only
-            // or on patch in case of 0.*
-        }
-
-        if ($hasChanged) {
-            $symfonyStyle->success('Updating "composer.json" with installed versions');
-            FileSystem::write($composerJsonFilePath, $composerJsonContents, null);
-        } else {
+        $changedPackages = $raiseToInstalledResult->getChangedPackageVersions();
+        if ($changedPackages === []) {
             $symfonyStyle->success('No changes made to "composer.json"');
+            return self::SUCCESS;
         }
+
+        if ($isDryRun === false) {
+            $changedComposerJsonContents = $raiseToInstalledResult->getComposerJsonContents();
+            FileSystem::write($composerJsonFilePath, $changedComposerJsonContents . PHP_EOL, null);
+        }
+
+        $symfonyStyle->success(sprintf(
+            '%d package%s %s changed to installed versions.%s%s "composer update --lock" to update "composer.lock" hash',
+            count($changedPackages),
+            count($changedPackages) === 1 ? '' : 's',
+            $isDryRun ? 'would be (is "--dry-run")' : 'were updated',
+            PHP_EOL,
+            $isDryRun ? 'Then you would run' : 'Now run',
+        ));
+
+        foreach ($changedPackages as $changedPackage) {
+            $symfonyStyle->writeln(sprintf(
+                ' * <fg=green>%s</> (<fg=yellow>%s</> => <fg=yellow>%s</>)',
+                $changedPackage->getPackageName(),
+                $changedPackage->getOldVersion(),
+                $changedPackage->getNewVersion()
+            ));
+        }
+
+        $symfonyStyle->newLine();
 
         return self::SUCCESS;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function resolveInstalledPackagesToVersions(): array
-    {
-        $installedJsonFilePath = getcwd() . '/vendor/composer/installed.json';
-
-        $installedJson = JsonFileLoader::loadFileToJson($installedJsonFilePath);
-        Assert::keyExists($installedJson, 'packages');
-
-        $installedPackagesToVersions = [];
-        foreach ($installedJson['packages'] as $installedPackage) {
-            $packageName = $installedPackage['name'];
-            $packageVersion = $installedPackage['version'];
-
-            $installedPackagesToVersions[$packageName] = $packageVersion;
-        }
-
-        return $installedPackagesToVersions;
     }
 }
