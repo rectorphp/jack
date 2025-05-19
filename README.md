@@ -140,11 +140,7 @@ vendor/bin/jack open-versions --package-prefix symfony
 
 <br>
 
-To preview changes without modifying `composer.json`, use:
-
-```bash
-vendor/bin/jack open-versions --dry-run
-```
+To preview changes without modifying `composer.json`, add `--dry-run`.
 
 <br>
 
@@ -189,11 +185,7 @@ That's exactly what following command does:
 vendor/bin/jack raise-to-installed
 ```
 
-To see changes first without applying, use again `--dry-run`:
-
-```bash
-vendor/bin/jack raise-to-installed --dry-run
-```
+To see changes first without applying, add `--dry-run`.
 
 <br>
 
