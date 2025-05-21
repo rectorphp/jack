@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Jack\Command;
 
 use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,16 +50,16 @@ final class RaiseToInstalledCommand extends Command
         Assert::fileExists($composerJsonFilePath);
         $composerJsonContents = FileSystem::read($composerJsonFilePath);
 
-        $raiseToInstalledResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
+        $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
 
-        $changedPackages = $raiseToInstalledResult->getChangedPackageVersions();
+        $changedPackages = $changedPackageVersionsResult->getChangedPackageVersions();
         if ($changedPackages === []) {
             $symfonyStyle->success('No changes made to "composer.json"');
             return self::SUCCESS;
         }
 
         if ($isDryRun === false) {
-            $changedComposerJsonContents = $raiseToInstalledResult->getComposerJsonContents();
+            $changedComposerJsonContents = $changedPackageVersionsResult->getComposerJsonContents();
             FileSystem::write($composerJsonFilePath, $changedComposerJsonContents . PHP_EOL, null);
         }
 

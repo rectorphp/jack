@@ -16,11 +16,11 @@ use Rector\Jack\ValueObject\ComposerProcessorResult\ChangedPackageVersionsResult
 /**
  * @see \Rector\Jack\Tests\ComposerProcessor\RaiseToInstalledComposerProcessor\RaiseToInstalledComposerProcessorTest
  */
-final class RaiseToInstalledComposerProcessor
+final readonly class RaiseToInstalledComposerProcessor
 {
     public function __construct(
-        private readonly VersionParser $versionParser,
-        private readonly InstalledVersionResolver $installedVersionResolver,
+        private VersionParser $versionParser,
+        private InstalledVersionResolver $installedVersionResolver,
     ) {
     }
 
@@ -36,6 +36,10 @@ final class RaiseToInstalledComposerProcessor
         // if so, replace it
         foreach ($composerJson['require'] ?? [] as $packageName => $packageVersion) {
             if (! isset($installedPackagesToVersions[$packageName])) {
+                continue;
+            }
+
+            if ($this->shouldSkipPackageVersion($packageVersion)) {
                 continue;
             }
 
@@ -118,5 +122,10 @@ final class RaiseToInstalledComposerProcessor
         }
 
         return new ChangedPackageVersionsResult($composerJsonContents, $changedPackageVersions);
+    }
+
+    private function shouldSkipPackageVersion(string $packageVersion): bool
+    {
+        return str_contains($packageVersion, 'dev-');
     }
 }

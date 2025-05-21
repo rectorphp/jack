@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Jack\ValueObject;
 
-final class ChangedPackageVersion
+final readonly class ChangedPackageVersion
 {
     public function __construct(
         private string $packageName,

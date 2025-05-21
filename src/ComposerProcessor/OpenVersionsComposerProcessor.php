@@ -13,7 +13,7 @@ use Rector\Jack\ValueObject\OutdatedComposer;
 /**
  * @see \Rector\Jack\Tests\ComposerProcessor\OpenVersionsComposerProcessor\OpenVersionsComposerProcessorTest
  */
-final class OpenVersionsComposerProcessor
+final readonly class OpenVersionsComposerProcessor
 {
     public function __construct(
         private NextVersionResolver $nextVersionResolver
