@@ -76,12 +76,17 @@ final class BreakPointCommand extends Command
                 sprintf('The "<fg=green>%s</>" package is outdated', $outdatedPackage->getName())
             );
 
-            $symfonyStyle->writeln(sprintf(
-                ' * Your version %s is <fg=%s>%s</>',
-                $outdatedPackage->getCurrentVersion(),
-                $outdatedPackage->isVeryOld() ? 'red' : 'yellow',
-                $outdatedPackage->getCurrentVersionAge(),
-            ));
+            if ($outdatedPackage->getCurrentVersionAge()) {
+                $symfonyStyle->writeln(sprintf(
+                    ' * Your version %s is <fg=%s>%s</>',
+                    $outdatedPackage->getCurrentVersion(),
+                    $outdatedPackage->isVeryOld() ? 'red' : 'yellow',
+                    $outdatedPackage->getCurrentVersionAge(),
+                ));
+            } else {
+                // composer 2.7- compatible
+                $symfonyStyle->writeln(sprintf(' * Your version is %s', $outdatedPackage->getCurrentVersion()));
+            }
 
             $symfonyStyle->writeln(sprintf(' * Bump to %s', $outdatedPackage->getLatestVersion()));
             $symfonyStyle->newLine();
