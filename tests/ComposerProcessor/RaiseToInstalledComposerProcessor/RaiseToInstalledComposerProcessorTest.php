@@ -38,7 +38,7 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
         $this->assertSame('^9.0', $changedPackageVersion->getOldVersion());
 
         // note: this might change in near future; improve to dynamic soon
-        $this->assertSame('^12.14', $changedPackageVersion->getNewVersion());
+        $this->assertStringStartsWith('^12.1', $changedPackageVersion->getNewVersion());
     }
 
     public function testSkipDev(): void
