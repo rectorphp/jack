@@ -34,8 +34,7 @@ final readonly class OpenVersionsComposerProcessor
         foreach ($outdatedPackages as $outdatedPackage) {
             $composerVersion = $outdatedPackage->getComposerVersion();
 
-            // already filled with open version
-            if (str_contains($composerVersion, '|')) {
+            if ($this->skipExistingVersion($composerVersion)) {
                 continue;
             }
 
@@ -63,5 +62,15 @@ final readonly class OpenVersionsComposerProcessor
         }
 
         return new ChangedPackageVersionsResult($composerJsonContents, $openedPackages);
+    }
+
+    private function skipExistingVersion(string $composerVersion): bool
+    {
+        // already filled with open version
+        if (str_contains($composerVersion, '|')) {
+            return true;
+        }
+
+        return str_contains($composerVersion, 'dev-');
     }
 }

@@ -49,4 +49,23 @@ final class OpenVersionsComposerProcessorTest extends AbstractTestCase
             $changedPackageVersionsResult->getComposerJsonContents()
         );
     }
+
+    public function testSkipDev(): void
+    {
+        $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/skip-dev.json');
+
+        $outdatedComposer = new OutdatedComposer([
+            new OutdatedPackage('symfony/console', '5.4.0', 'dev-main', true, '6.4.0', '1 year'),
+        ]);
+
+        $changedPackageVersionsResult = $this->openVersionsComposerProcessor->process(
+            $composerJsonContents,
+            $outdatedComposer,
+            10,
+            false,
+            null
+        );
+
+        $this->assertEmpty($changedPackageVersionsResult->getChangedPackageVersions());
+    }
 }
