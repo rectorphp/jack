@@ -24,20 +24,28 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
     {
         $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/some-outdated-composer.json');
 
-        $raiseToInstalledResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
+        $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
 
-        $this->assertCount(1, $raiseToInstalledResult->getChangedPackageVersions());
+        $this->assertCount(1, $changedPackageVersionsResult->getChangedPackageVersions());
         $this->assertContainsOnlyInstancesOf(
             ChangedPackageVersion::class,
-            $raiseToInstalledResult->getChangedPackageVersions()
+            $changedPackageVersionsResult->getChangedPackageVersions()
         );
 
-        $changedPackageVersion = $raiseToInstalledResult->getChangedPackageVersions()[0];
+        $changedPackageVersion = $changedPackageVersionsResult->getChangedPackageVersions()[0];
 
         $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
         $this->assertSame('^9.0', $changedPackageVersion->getOldVersion());
 
         // note: this might change in near future; improve to dynamic soon
         $this->assertSame('^12.14', $changedPackageVersion->getNewVersion());
+    }
+
+    public function testSkipDev(): void
+    {
+        $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/skip-dev.json');
+        $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
+
+        $this->assertEmpty($changedPackageVersionsResult->getChangedPackageVersions());
     }
 }
