@@ -14,7 +14,8 @@ final readonly class OutdatedPackage
         private string $composerVersion,
         private bool $isProd,
         private string $latestVersion,
-        private string $currentVersionAge,
+        // nullable on composer 2.7-
+        private ?string $currentVersionAge,
     ) {
     }
 
@@ -43,13 +44,17 @@ final readonly class OutdatedPackage
         return $this->latestVersion;
     }
 
-    public function getCurrentVersionAge(): string
+    public function getCurrentVersionAge(): ?string
     {
         return $this->currentVersionAge;
     }
 
     public function isVeryOld(): bool
     {
+        if ($this->currentVersionAge === null) {
+            return true;
+        }
+
         $matchYears = Strings::match($this->currentVersionAge, '#[3-9] years#');
         return $matchYears !== null;
     }

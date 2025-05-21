@@ -32,7 +32,7 @@ final class OutdatedPackageMapper
                 $composerVersions,
                 $isProd,
                 $data['latest'],
-                $data['release-age']
+                $data['release-age'] ?? null
             );
         }, $outdatedPackages);
     }
