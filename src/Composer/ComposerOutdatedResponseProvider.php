@@ -10,6 +10,11 @@ use Symfony\Component\Process\Process;
 
 final class ComposerOutdatedResponseProvider
 {
+    /**
+     * @var int
+     */
+    private const WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
+
     public function provide(): string
     {
         $composerOutdatedFilePath = $this->resolveComposerOutdatedFilePath();
@@ -67,7 +72,7 @@ final class ComposerOutdatedResponseProvider
             return false;
         }
 
-        return (time() - $fileTime) < DateTime::WEEK;
+        return (time() - $fileTime) < self::WEEK_IN_SECONDS;
     }
 
     private function shouldLoadCacheFile(?string $cacheFilePath): bool
