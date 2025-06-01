@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Composer;
 
-use Nette\Utils\DateTime;
 use Nette\Utils\FileSystem;
 use Symfony\Component\Process\Process;
 
