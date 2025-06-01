@@ -63,6 +63,11 @@ final class BreakPointCommand extends Command
             $composerJsonFilePath
         );
 
+        if ($outdatedComposer->count() === 0) {
+            $symfonyStyle->success('All packages are up to date');
+            return self::SUCCESS;
+        }
+
         $symfonyStyle->title(
             sprintf(
                 'Found %d outdated package%s',
