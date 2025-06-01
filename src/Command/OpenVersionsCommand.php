@@ -60,6 +60,12 @@ final class OpenVersionsCommand extends Command
             $composerJsonFilePath
         );
 
+        if ($outdatedComposer->count() === 0) {
+            $symfonyStyle->success('All packages are up to date. You are the best!');
+
+            return self::SUCCESS;
+        }
+
         $symfonyStyle->newLine();
 
         $symfonyStyle->writeln(
