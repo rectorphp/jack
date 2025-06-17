@@ -48,4 +48,30 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
 
         $this->assertEmpty($changedPackageVersionsResult->getChangedPackageVersions());
     }
+
+    public function testSinglePiped(): void
+    {
+        $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/single-piped.json');
+
+        $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
+
+        $currentChangedPackageVersionsResult = current($changedPackageVersionsResult->getChangedPackageVersions());
+
+        $this->assertSame('illuminate/container', $currentChangedPackageVersionsResult->getPackageName());
+        $this->assertSame('^12.14 | 13.0', $currentChangedPackageVersionsResult->getOldVersion());
+        $this->assertSame('^12.18', $currentChangedPackageVersionsResult->getNewVersion());
+    }
+
+    public function testDoublePiped(): void
+    {
+        $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/double-piped.json');
+
+        $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
+
+        $currentChangedPackageVersionsResult = current($changedPackageVersionsResult->getChangedPackageVersions());
+
+        $this->assertSame('illuminate/container', $currentChangedPackageVersionsResult->getPackageName());
+        $this->assertSame('^12.14 | 13.0', $currentChangedPackageVersionsResult->getOldVersion());
+        $this->assertSame('^12.18', $currentChangedPackageVersionsResult->getNewVersion());
+    }
 }
