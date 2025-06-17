@@ -36,7 +36,6 @@ final readonly class RaiseToInstalledComposerProcessor
         // if so, replace it
         $requiredPackagesToVersions = array_merge($composerJson['require'] ?? [], $composerJson['require-dev'] ?? []);
         foreach ($requiredPackagesToVersions as $packageName => $packageVersion) {
-            //$packageVersion = str_replace('||', '|', $packageVersion);
             if (! isset($installedPackagesToVersions[$packageName])) {
                 continue;
             }
