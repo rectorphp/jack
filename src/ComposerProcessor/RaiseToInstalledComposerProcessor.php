@@ -46,6 +46,9 @@ final readonly class RaiseToInstalledComposerProcessor
 
             $installedVersion = $installedPackagesToVersions[$packageName];
 
+            // normalize pipe
+            $packageVersion = str_replace('||', '|', $packageVersion);
+
             // special case for unions
             if (str_contains((string) $packageVersion, '|')) {
                 $passingVersionKeys = [];
