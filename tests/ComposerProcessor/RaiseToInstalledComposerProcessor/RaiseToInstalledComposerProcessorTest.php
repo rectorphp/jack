@@ -59,7 +59,7 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
 
         $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
         $this->assertSame('^12.14 | 13.0', $changedPackageVersion->getOldVersion());
-        $this->assertSame('^12.18', $changedPackageVersion->getNewVersion());
+        $this->assertSame('^12.19', $changedPackageVersion->getNewVersion());
     }
 
     public function testDoublePiped(): void
@@ -72,6 +72,6 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
 
         $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
         $this->assertSame('^12.14 | 13.0', $changedPackageVersion->getOldVersion());
-        $this->assertSame('^12.18', $changedPackageVersion->getNewVersion());
+        $this->assertSame('^12.19', $changedPackageVersion->getNewVersion());
     }
 }

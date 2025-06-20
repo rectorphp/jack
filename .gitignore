@@ -4,3 +4,4 @@ composer.lock
 .phpunit.cache
 
 tmp
+/.idea/
