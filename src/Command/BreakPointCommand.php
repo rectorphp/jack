@@ -37,6 +37,13 @@ final class BreakPointCommand extends Command
             'Maximum number of outdated major version packages',
             5
         );
+
+        $this->addOption(
+            'ignore',
+            null,
+            InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL,
+            'Ignore packages by name, e.g. "symfony/" or "symfony/console"',
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -59,7 +66,18 @@ final class BreakPointCommand extends Command
 
         $composerJsonFilePath = getcwd() . '/composer.json';
         $outdatedComposer = $this->outdatedComposerFactory->createOutdatedComposer(
-            $responseJson[ComposerKey::INSTALLED_KEY],
+            array_filter(
+                $responseJson[ComposerKey::INSTALLED_KEY],
+                static function (array $package) use ($input): bool {
+                    foreach ($input->getOption('ignore') as $ignoredPackage) {
+                        if (str_contains((string) $package['name'], $ignoredPackage)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+            ),
             $composerJsonFilePath
         );
 
