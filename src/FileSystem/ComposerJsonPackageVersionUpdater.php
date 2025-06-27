@@ -19,14 +19,15 @@ final class ComposerJsonPackageVersionUpdater
             sprintf('"%s": "%s"', $packageName, $newVersion)
         );
 
-        $suggestContent = Strings::match($composerJsonContents, '#"suggest"\s*:\s*{[^}]*}#');
+        $skippedKeys = ['suggest', 'replace', 'provide', 'conflict'];
 
-        if ($suggestContent !== null) {
-            $allChanges = Strings::replace(
-                $allChanges,
-                '#"suggest"\s*:\s*{[^}]*}#',
-                $suggestContent[0]
-            );
+        foreach ($skippedKeys as $skippedKey) {
+            $regexKeyContent = sprintf('#"%s"\s*:\s*{[^}]*}#', $skippedKey);
+            $skippedContent = Strings::match($composerJsonContents, $regexKeyContent);
+
+            if ($skippedContent !== null) {
+                $allChanges = Strings::replace($allChanges, $regexKeyContent, $skippedContent[0]);
+            }
         }
 
         return $allChanges;
