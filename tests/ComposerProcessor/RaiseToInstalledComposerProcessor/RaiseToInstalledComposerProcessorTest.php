@@ -102,6 +102,35 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
         $this->assertSame($changedFileContent, $changedPackageVersionsResult->getComposerJsonContents());
     }
 
+    public function testSkipConflictChange(): void
+    {
+        $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/skip-conflict.json');
+
+        $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
+
+        $changedPackageVersion = $changedPackageVersionsResult->getChangedPackageVersions()[0];
+
+        $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
+        $this->assertSame('^9.0', $changedPackageVersion->getOldVersion());
+        $this->assertSame('^12.19', $changedPackageVersion->getNewVersion());
+
+        $this->assertSame(
+            <<<'JSON'
+            {
+                "require-dev": {
+                    "illuminate/container": "^12.19"
+                },
+                "conflict": {
+                    "illuminate/container": "<9.0"
+                }
+            }
+
+            JSON
+            ,
+            $changedPackageVersionsResult->getComposerJsonContents()
+        );
+    }
+
     public function testSinglePiped(): void
     {
         $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/single-piped.json');
