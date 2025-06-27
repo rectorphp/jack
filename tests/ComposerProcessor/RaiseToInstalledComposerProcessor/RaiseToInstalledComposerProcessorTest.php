@@ -50,6 +50,9 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
         $this->assertEmpty($changedPackageVersionsResult->getChangedPackageVersions());
     }
 
+    /**
+     * @return iterable<array{string, string}>
+     */
     public static function provideSkipSuggestChangeFiles(): iterable
     {
         yield [
