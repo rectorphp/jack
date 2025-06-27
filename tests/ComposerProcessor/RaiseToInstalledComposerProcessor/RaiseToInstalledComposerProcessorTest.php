@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Jack\Tests\ComposerProcessor\RaiseToInstalledComposerProcessor;
 
 use Nette\Utils\FileSystem;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
 use Rector\Jack\Tests\AbstractTestCase;
 use Rector\Jack\ValueObject\ChangedPackageVersion;
@@ -49,9 +50,43 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
         $this->assertEmpty($changedPackageVersionsResult->getChangedPackageVersions());
     }
 
-    public function testSkipSuggestChange(): void
+    public static function provideSkipSuggestChangeFiles(): iterable
     {
-        $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/skip-suggest.json');
+        yield [
+            __DIR__ . '/Fixture/skip-suggest.json',
+            <<<'JSON'
+            {
+                "require-dev": {
+                    "illuminate/container": "^12.19"
+                },
+                "suggest": {
+                "illuminate/container": "to use container"
+                }
+            }
+
+            JSON
+        ];
+
+        yield [
+            __DIR__ . '/Fixture/skip-suggest-early-definition.json',
+            <<<'JSON'
+            {
+                "suggest": {
+                "illuminate/container": "to use container"
+                },
+                "require-dev": {
+                    "illuminate/container": "^12.19"
+                }
+            }
+
+            JSON
+        ];
+    }
+
+    #[DataProvider('provideSkipSuggestChangeFiles')]
+    public function testSkipSuggestChange(string $file, string $changedFileContent): void
+    {
+        $composerJsonContents = FileSystem::read($file);
 
         $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
 
@@ -61,20 +96,7 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
         $this->assertSame('^9.0', $changedPackageVersion->getOldVersion());
         $this->assertSame('^12.19', $changedPackageVersion->getNewVersion());
 
-        $this->assertSame(<<<'JSON'
-{
-    "require-dev": {
-        "illuminate/container": "^12.19"
-    },
-    "suggest": {
-      "illuminate/container": "to use container"
-    }
-}
-
-JSON
-        ,
-        $changedPackageVersionsResult->getComposerJsonContents()
-        );
+        $this->assertSame($changedFileContent, $changedPackageVersionsResult->getComposerJsonContents());
     }
 
     public function testSinglePiped(): void
