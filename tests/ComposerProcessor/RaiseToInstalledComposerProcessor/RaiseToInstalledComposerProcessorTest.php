@@ -60,7 +60,7 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
                     "illuminate/container": "^12.19"
                 },
                 "suggest": {
-                "illuminate/container": "to use container"
+                    "illuminate/container": "to use container"
                 }
             }
 
@@ -72,7 +72,7 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
             <<<'JSON'
             {
                 "suggest": {
-                "illuminate/container": "to use container"
+                    "illuminate/container": "to use container"
                 },
                 "require-dev": {
                     "illuminate/container": "^12.19"
