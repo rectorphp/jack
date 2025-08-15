@@ -10,7 +10,7 @@
         "composer/semver": "^3.4",
         "illuminate/container": "^12.14",
         "nette/utils": "^4.0",
-        "symfony/console": "^6.4",
+        "symfony/console": "^6.4.24",
         "symfony/finder": "^7.2",
         "symfony/process": "^7.2",
         "webmozart/assert": "^1.11"
@@ -39,8 +39,7 @@
     },
     "replace": {
         "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-intl-normalizer": "*",
-        "symfony/polyfill-mbstring": "*"
+        "symfony/polyfill-intl-normalizer": "*"
     },
     "config": {
         "sort-packages": true,
@@ -55,12 +54,5 @@
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --ansi",
         "rector": "vendor/bin/rector process --ansi"
-    },
-    "extra": {
-        "patches": {
-            "symfony/console": [
-                "patches/symfony-console-helper-helper-php.patch"
-            ]
-        }
     }
 }
