@@ -1,8 +1,0 @@
-{
-    "require-dev": {
-        "illuminate/container": "^9.0"
-    },
-    "suggest": {
-        "illuminate/container": "to use container"
-    }
-}
