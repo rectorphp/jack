@@ -1,70 +1,88 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Rector\Jack\ValueObject;
 
-use Nette\Utils\Strings;
-
-final readonly class OutdatedPackage
+use Jack202508\Nette\Utils\Strings;
+final class OutdatedPackage
 {
-    public function __construct(
-        private string $name,
-        private string $currentVersion,
-        private string $composerVersion,
-        private bool $isProd,
-        private string $latestVersion,
+    /**
+     * @readonly
+     * @var string
+     */
+    private $name;
+    /**
+     * @readonly
+     * @var string
+     */
+    private $currentVersion;
+    /**
+     * @readonly
+     * @var string
+     */
+    private $composerVersion;
+    /**
+     * @readonly
+     * @var bool
+     */
+    private $isProd;
+    /**
+     * @readonly
+     * @var string
+     */
+    private $latestVersion;
+    /**
+     * @readonly
+     * @var string|null
+     */
+    private $currentVersionAge;
+    public function __construct(string $name, string $currentVersion, string $composerVersion, bool $isProd, string $latestVersion, ?string $currentVersionAge)
+    {
+        $this->name = $name;
+        $this->currentVersion = $currentVersion;
+        $this->composerVersion = $composerVersion;
+        $this->isProd = $isProd;
+        $this->latestVersion = $latestVersion;
         // nullable on composer 2.7-
-        private ?string $currentVersionAge,
-    ) {
+        $this->currentVersionAge = $currentVersionAge;
     }
-
-    public function getName(): string
+    public function getName() : string
     {
         return $this->name;
     }
-
-    public function getCurrentVersion(): string
+    public function getCurrentVersion() : string
     {
         return $this->currentVersion;
     }
-
-    public function getComposerVersion(): string
+    public function getComposerVersion() : string
     {
         return $this->composerVersion;
     }
-
-    public function isProd(): bool
+    public function isProd() : bool
     {
         return $this->isProd;
     }
-
-    public function getLatestVersion(): string
+    public function getLatestVersion() : string
     {
         return $this->latestVersion;
     }
-
-    public function getCurrentVersionAge(): ?string
+    public function getCurrentVersionAge() : ?string
     {
         return $this->currentVersionAge;
     }
-
-    public function isVeryOld(): bool
+    public function isVeryOld() : bool
     {
         if ($this->currentVersionAge === null) {
-            return true;
+            return \true;
         }
-
         $matchYears = Strings::match($this->currentVersionAge, '#[3-9] years#');
         return $matchYears !== null;
     }
-
-    public function lastestIsDevBranch(): bool
+    public function lastestIsDevBranch() : bool
     {
-        if (str_starts_with($this->latestVersion, 'dev-')) {
-            return true;
+        if (\strncmp($this->latestVersion, 'dev-', \strlen('dev-')) === 0) {
+            return \true;
         }
-
-        return str_contains($this->latestVersion, '-dev');
+        return \strpos($this->latestVersion, '-dev') !== \false;
     }
 }

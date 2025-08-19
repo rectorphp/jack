@@ -1,5 +1,0 @@
-{
-    "require": {
-        "symfony/console": "dev-test"
-    }
-}
