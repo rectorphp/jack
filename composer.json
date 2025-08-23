@@ -37,10 +37,6 @@
             "Rector\\Jack\\Tests\\": "tests"
         }
     },
-    "replace": {
-        "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-intl-normalizer": "*"
-    },
     "config": {
         "sort-packages": true,
         "platform-check": false,
