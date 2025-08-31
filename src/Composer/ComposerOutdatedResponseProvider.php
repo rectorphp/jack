@@ -34,7 +34,7 @@ final class ComposerOutdatedResponseProvider
         $processResult = $composerOutdatedProcess->getOutput();
 
         if (is_string($composerOutdatedFilePath)) {
-            FileSystem::write($composerOutdatedFilePath, $processResult);
+            FileSystem::write($composerOutdatedFilePath, $processResult, null);
         }
 
         return $processResult;
