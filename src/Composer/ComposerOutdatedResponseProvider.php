@@ -56,7 +56,7 @@ final class ComposerOutdatedResponseProvider
     private function resolveComposerOutdatedFilePath(): ?string
     {
         $projectComposerHash = $this->resolveProjectComposerHash();
-        if (!in_array($projectComposerHash, [null, '', '0'], true)) {
+        if (!in_array($projectComposerHash, [null, ''], true)) {
             // load from cache if we already made the analysis
             return sys_get_temp_dir() . '/jack/composer-outdated-' . $projectComposerHash . '.json';
         }
