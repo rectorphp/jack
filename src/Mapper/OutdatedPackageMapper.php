@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Jack\Mapper;
 
 use Rector\Jack\ValueObject\OutdatedPackage;
-use Webmozart\Assert\Assert;
 
 final class OutdatedPackageMapper
 {
@@ -62,10 +61,11 @@ final class OutdatedPackageMapper
 
         // use native functions to ease re-use by 3rd party packages
         $composerJsonContents = file_get_contents($composerJsonFilePath);
-        Assert::string($composerJsonContents);
+        if (! is_string($composerJsonContents)) {
+            return [];
+        }
 
         $composerJson = (array) json_decode($composerJsonContents, true);
-
 
         $this->cachedComposerJson[$composerJsonFilePath] = $composerJson;
 
