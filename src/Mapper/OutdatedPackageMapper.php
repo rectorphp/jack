@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Mapper;
 
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Rector\Jack\ValueObject\OutdatedPackage;
 
 final class OutdatedPackageMapper
 {
+    /**
+     * @var array<string, array<string, mixed>>
+     */
+    private array $cachedComposerJson = [];
+
     /**
      * @param array<array<string, mixed>> $outdatedPackages
      *
@@ -52,8 +55,17 @@ final class OutdatedPackageMapper
      */
     private function parseComposerJsonToJson(string $composerJsonFilePath): array
     {
-        $composerJsonContents = FileSystem::read($composerJsonFilePath);
+        if (isset($this->cachedComposerJson[$composerJsonFilePath])) {
+            return $this->cachedComposerJson[$composerJsonFilePath];
+        }
 
-        return (array) Json::decode($composerJsonContents, forceArrays: true);
+        // use native functions to ease re-use by 3rd party packages
+        $composerJsonContents = file_get_contents($composerJsonFilePath);
+
+        $composerJson = (array) json_decode($composerJsonContents, true);
+
+        $this->cachedComposerJson[$composerJsonFilePath] = $composerJson;
+
+        return $composerJson;
     }
 }
