@@ -1,5 +1,0 @@
-{
-    "require": {
-        "illuminate/container": "^12.14 | 13.0"
-    }
-}
