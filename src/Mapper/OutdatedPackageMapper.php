@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Rector\Jack\Mapper;
 
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
+use Jack202511\Nette\Utils\FileSystem;
+use Jack202511\Nette\Utils\Json;
 use Rector\Jack\ValueObject\OutdatedPackage;
-
 final class OutdatedPackageMapper
 {
     /**
@@ -15,45 +13,31 @@ final class OutdatedPackageMapper
      *
      * @return OutdatedPackage[]
      */
-    public function mapToObjects(array $outdatedPackages, string $composerJsonFilePath): array
+    public function mapToObjects(array $outdatedPackages, string $composerJsonFilePath) : array
     {
         $prodPackagesToVersions = $this->resolveRequiredPackages($composerJsonFilePath, 'require');
         $devPackagesToVersions = $this->resolveRequiredPackages($composerJsonFilePath, 'require-dev');
-
-        return array_map(function (array $data) use ($prodPackagesToVersions, $devPackagesToVersions): OutdatedPackage {
+        return \array_map(function (array $data) use($prodPackagesToVersions, $devPackagesToVersions) : OutdatedPackage {
             $packageName = $data['name'];
-
-            $isProd = array_key_exists($packageName, $prodPackagesToVersions);
+            $isProd = \array_key_exists($packageName, $prodPackagesToVersions);
             $composerVersions = $prodPackagesToVersions[$packageName] ?? $devPackagesToVersions[$packageName];
-
-            return new OutdatedPackage(
-                $packageName,
-                $data['version'],
-                $composerVersions,
-                $isProd,
-                $data['latest'],
-                $data['release-age'] ?? null
-            );
+            return new OutdatedPackage($packageName, $data['version'], $composerVersions, $isProd, $data['latest'], $data['release-age'] ?? null);
         }, $outdatedPackages);
     }
-
     /**
      * @return array<string, string>
      */
-    private function resolveRequiredPackages(string $composerJsonFilePath, string $section): array
+    private function resolveRequiredPackages(string $composerJsonFilePath, string $section) : array
     {
         $composerJson = $this->parseComposerJsonToJson($composerJsonFilePath);
-
         return (array) ($composerJson[$section] ?? []);
     }
-
     /**
      * @return array<string, mixed>
      */
-    private function parseComposerJsonToJson(string $composerJsonFilePath): array
+    private function parseComposerJsonToJson(string $composerJsonFilePath) : array
     {
         $composerJsonContents = FileSystem::read($composerJsonFilePath);
-
-        return (array) Json::decode($composerJsonContents, forceArrays: true);
+        return (array) Json::decode($composerJsonContents, \true);
     }
 }
