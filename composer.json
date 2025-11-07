@@ -8,24 +8,24 @@
     "require": {
         "php": ">=8.2",
         "composer/semver": "^3.4",
-        "illuminate/container": "^12.25",
+        "illuminate/container": "^12.37",
         "nette/utils": "^4.0",
-        "symfony/console": "^6.4.24",
+        "symfony/console": "^6.4.24|7.0.*",
         "symfony/finder": "^7.3",
         "symfony/process": "^7.3",
-        "webmozart/assert": "^1.11"
+        "webmozart/assert": "^1.12"
     },
     "require-dev": {
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.5",
-        "rector/rector": "^2.1",
+        "phpunit/phpunit": "^11.5|^12.0",
+        "rector/rector": "^2.2",
         "shipmonk/composer-dependency-analyser": "^1.8",
-        "phpecs/phpecs": "^2.1",
+        "phpecs/phpecs": "^2.2",
         "symplify/phpstan-extensions": "^12.0",
         "symplify/vendor-patches": "^11.5",
         "tomasvotruba/class-leak": "^2.0",
-        "tracy/tracy": "^2.10"
+        "tracy/tracy": "^2.11"
     },
     "autoload": {
         "psr-4": {
