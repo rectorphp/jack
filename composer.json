@@ -10,9 +10,9 @@
         "composer/semver": "^3.4",
         "illuminate/container": "^12.14",
         "nette/utils": "^4.0",
-        "symfony/console": "^6.4",
-        "symfony/finder": "^7.2",
-        "symfony/process": "^7.2",
+        "symfony/console": "^6.4 || ^7.0 || ^8.0",
+        "symfony/finder": "^7.2 || ^7.3 || ^8.0",
+        "symfony/process": "^7.2 || ^7.3 || ^8.0",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
@@ -64,7 +64,3 @@
         }
     }
 }
-
-
-
-
