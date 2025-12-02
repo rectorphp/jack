@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Composer;
 
-use Nette\Utils\DateTime;
 use Nette\Utils\FileSystem;
 use Symfony\Component\Process\Process;
 
 final class ComposerOutdatedResponseProvider
 {
+    /**
+     * @var int
+     */
+    private const WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
+
     public function provide(): string
     {
         $composerOutdatedFilePath = $this->resolveComposerOutdatedFilePath();
@@ -30,7 +34,7 @@ final class ComposerOutdatedResponseProvider
         $processResult = $composerOutdatedProcess->getOutput();
 
         if (is_string($composerOutdatedFilePath)) {
-            FileSystem::write($composerOutdatedFilePath, $processResult);
+            FileSystem::write($composerOutdatedFilePath, $processResult, null);
         }
 
         return $processResult;
@@ -52,7 +56,7 @@ final class ComposerOutdatedResponseProvider
     private function resolveComposerOutdatedFilePath(): ?string
     {
         $projectComposerHash = $this->resolveProjectComposerHash();
-        if ($projectComposerHash) {
+        if (! in_array($projectComposerHash, [null, ''], true)) {
             // load from cache if we already made the analysis
             return sys_get_temp_dir() . '/jack/composer-outdated-' . $projectComposerHash . '.json';
         }
@@ -67,7 +71,7 @@ final class ComposerOutdatedResponseProvider
             return false;
         }
 
-        return (time() - $fileTime) < DateTime::WEEK;
+        return (time() - $fileTime) < self::WEEK_IN_SECONDS;
     }
 
     private function shouldLoadCacheFile(?string $cacheFilePath): bool

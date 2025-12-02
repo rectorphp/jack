@@ -58,4 +58,13 @@ final readonly class OutdatedPackage
         $matchYears = Strings::match($this->currentVersionAge, '#[3-9] years#');
         return $matchYears !== null;
     }
+
+    public function lastestIsDevBranch(): bool
+    {
+        if (str_starts_with($this->latestVersion, 'dev-')) {
+            return true;
+        }
+
+        return str_contains($this->latestVersion, '-dev');
+    }
 }

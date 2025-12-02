@@ -34,7 +34,8 @@ final readonly class RaiseToInstalledComposerProcessor
 
         // iterate require and require-dev sections and check if installed version is newer one than in composer.json
         // if so, replace it
-        foreach ($composerJson['require'] ?? [] as $packageName => $packageVersion) {
+        $requiredPackagesToVersions = array_merge($composerJson['require'] ?? [], $composerJson['require-dev'] ?? []);
+        foreach ($requiredPackagesToVersions as $packageName => $packageVersion) {
             if (! isset($installedPackagesToVersions[$packageName])) {
                 continue;
             }
@@ -44,6 +45,9 @@ final readonly class RaiseToInstalledComposerProcessor
             }
 
             $installedVersion = $installedPackagesToVersions[$packageName];
+
+            // normalize pipe
+            $packageVersion = str_replace('||', '|', $packageVersion);
 
             // special case for unions
             if (str_contains((string) $packageVersion, '|')) {

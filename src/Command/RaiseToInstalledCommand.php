@@ -60,7 +60,7 @@ final class RaiseToInstalledCommand extends Command
 
         if ($isDryRun === false) {
             $changedComposerJsonContents = $changedPackageVersionsResult->getComposerJsonContents();
-            FileSystem::write($composerJsonFilePath, $changedComposerJsonContents . PHP_EOL, null);
+            FileSystem::write($composerJsonFilePath, rtrim($changedComposerJsonContents) . PHP_EOL, null);
         }
 
         $symfonyStyle->success(sprintf(
