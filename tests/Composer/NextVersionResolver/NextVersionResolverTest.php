@@ -36,6 +36,6 @@ final class NextVersionResolverTest extends AbstractTestCase
         yield ['some/package', '4.*', '5.0.*'];
 
         // special cases
-        yield ['symfony/console', '^3.4', '4.0.*'];
+        yield ['symfony/console', '^5.4', '6.0.*'];
     }
 }

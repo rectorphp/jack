@@ -28,6 +28,7 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
         $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
 
         $this->assertCount(1, $changedPackageVersionsResult->getChangedPackageVersions());
+
         $this->assertContainsOnlyInstancesOf(
             ChangedPackageVersion::class,
             $changedPackageVersionsResult->getChangedPackageVersions()
@@ -35,11 +36,11 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
 
         $changedPackageVersion = $changedPackageVersionsResult->getChangedPackageVersions()[0];
 
-        $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
-        $this->assertSame('^9.0', $changedPackageVersion->getOldVersion());
+        $this->assertSame('nette/utils', $changedPackageVersion->getPackageName());
+        $this->assertSame('^2.0', $changedPackageVersion->getOldVersion());
 
         // note: this might change in near future; improve to dynamic soon
-        $this->assertStringStartsWith('^12.3', $changedPackageVersion->getNewVersion());
+        $this->assertStringStartsWith('^4.1', $changedPackageVersion->getNewVersion());
     }
 
     public function testSkipDev(): void
@@ -60,10 +61,10 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
             <<<'JSON'
             {
                 "require-dev": {
-                    "illuminate/container": "^12.37"
+                    "nette/utils": "^4.1"
                 },
                 "suggest": {
-                    "illuminate/container": "to use container"
+                    "nette/utils": "to use container"
                 }
             }
 
@@ -75,10 +76,10 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
             <<<'JSON'
             {
                 "suggest": {
-                    "illuminate/container": "to use container"
+                    "nette/utils": "to use container"
                 },
                 "require-dev": {
-                    "illuminate/container": "^12.37"
+                    "nette/utils": "^4.1"
                 }
             }
 
@@ -95,9 +96,9 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
 
         $changedPackageVersion = $changedPackageVersionsResult->getChangedPackageVersions()[0];
 
-        $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
-        $this->assertSame('^9.0', $changedPackageVersion->getOldVersion());
-        $this->assertStringStartsWith('^12.3', $changedPackageVersion->getNewVersion());
+        $this->assertSame('nette/utils', $changedPackageVersion->getPackageName());
+        $this->assertSame('^3.4', $changedPackageVersion->getOldVersion());
+        $this->assertSame('^4.1', $changedPackageVersion->getNewVersion());
 
         $this->assertSame($changedFileContent, $changedPackageVersionsResult->getComposerJsonContents());
     }
@@ -110,18 +111,18 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
 
         $changedPackageVersion = $changedPackageVersionsResult->getChangedPackageVersions()[0];
 
-        $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
-        $this->assertSame('^9.0', $changedPackageVersion->getOldVersion());
-        $this->assertStringStartsWith('^12.3', $changedPackageVersion->getNewVersion());
+        $this->assertSame('nette/utils', $changedPackageVersion->getPackageName());
+        $this->assertSame('^3.4', $changedPackageVersion->getOldVersion());
+        $this->assertSame('^4.1', $changedPackageVersion->getNewVersion());
 
         $this->assertSame(
             <<<'JSON'
             {
                 "require-dev": {
-                    "illuminate/container": "^12.37"
+                    "nette/utils": "^4.1"
                 },
                 "conflict": {
-                    "illuminate/container": "<9.0"
+                    "nette/utils": "<3.4"
                 }
             }
 
@@ -137,11 +138,13 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
 
         $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
 
+        $this->assertCount(1, $changedPackageVersionsResult->getChangedPackageVersions());
         $changedPackageVersion = $changedPackageVersionsResult->getChangedPackageVersions()[0];
 
-        $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
-        $this->assertSame('^12.14 | 13.0', $changedPackageVersion->getOldVersion());
-        $this->assertStringStartsWith('^12.', $changedPackageVersion->getNewVersion());
+        $this->assertInstanceOf(ChangedPackageVersion::class, $changedPackageVersion);
+
+        $this->assertSame('nette/utils', $changedPackageVersion->getPackageName());
+        $this->assertSame('^3.0 | ^4.0', $changedPackageVersion->getOldVersion());
     }
 
     public function testDoublePiped(): void
@@ -150,10 +153,12 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
 
         $changedPackageVersionsResult = $this->raiseToInstalledComposerProcessor->process($composerJsonContents);
 
+        $this->assertCount(1, $changedPackageVersionsResult->getChangedPackageVersions());
         $changedPackageVersion = $changedPackageVersionsResult->getChangedPackageVersions()[0];
 
-        $this->assertSame('illuminate/container', $changedPackageVersion->getPackageName());
-        $this->assertSame('^12.14 | 13.0', $changedPackageVersion->getOldVersion());
-        $this->assertStringStartsWith('^12.', $changedPackageVersion->getNewVersion());
+        $this->assertInstanceOf(ChangedPackageVersion::class, $changedPackageVersion);
+
+        $this->assertSame('nette/utils', $changedPackageVersion->getPackageName());
+        $this->assertSame('^3.0 | ^4.0', $changedPackageVersion->getOldVersion());
     }
 }

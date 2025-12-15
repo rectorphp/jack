@@ -6,16 +6,16 @@ namespace Rector\Jack\ComposerProcessor;
 
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
+use Entropy\Attributes\RelatedTest;
 use Nette\Utils\Json;
 use Rector\Jack\Composer\InstalledVersionResolver;
 use Rector\Jack\Composer\VersionComparator;
 use Rector\Jack\FileSystem\ComposerJsonPackageVersionUpdater;
+use Rector\Jack\Tests\ComposerProcessor\RaiseToInstalledComposerProcessor\RaiseToInstalledComposerProcessorTest;
 use Rector\Jack\ValueObject\ChangedPackageVersion;
 use Rector\Jack\ValueObject\ComposerProcessorResult\ChangedPackageVersionsResult;
 
-/**
- * @see \Rector\Jack\Tests\ComposerProcessor\RaiseToInstalledComposerProcessor\RaiseToInstalledComposerProcessorTest
- */
+#[RelatedTest(RaiseToInstalledComposerProcessorTest::class)]
 final readonly class RaiseToInstalledComposerProcessor
 {
     public function __construct(
@@ -27,7 +27,6 @@ final readonly class RaiseToInstalledComposerProcessor
     public function process(string $composerJsonContents): ChangedPackageVersionsResult
     {
         $installedPackagesToVersions = $this->installedVersionResolver->resolve();
-
         $composerJson = Json::decode($composerJsonContents, true);
 
         $changedPackageVersions = [];

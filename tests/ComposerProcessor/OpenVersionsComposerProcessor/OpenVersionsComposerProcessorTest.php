@@ -27,7 +27,7 @@ final class OpenVersionsComposerProcessorTest extends AbstractTestCase
         $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/some-closed-composer.json');
 
         $outdatedComposer = new OutdatedComposer([
-            new OutdatedPackage('symfony/console', '5.4.0', '^5.4', true, '6.4.0', '1 year'),
+            new OutdatedPackage('nette/utils', '3.4.0', '^3.4', true, '4.1.0', '1 year'),
         ]);
 
         $changedPackageVersionsResult = $this->openVersionsComposerProcessor->process(
@@ -55,7 +55,7 @@ final class OpenVersionsComposerProcessorTest extends AbstractTestCase
         $composerJsonContents = FileSystem::read(__DIR__ . '/Fixture/skip-dev.json');
 
         $outdatedComposer = new OutdatedComposer([
-            new OutdatedPackage('symfony/console', '5.4.0', 'dev-main', true, '6.4.0', '1 year'),
+            new OutdatedPackage('nette/utils', '5.4.0', 'dev-main', true, '6.4.0', '1 year'),
         ]);
 
         $changedPackageVersionsResult = $this->openVersionsComposerProcessor->process(

@@ -13,9 +13,9 @@ use Rector\Jack\Exception\ShouldNotHappenException;
  */
 final readonly class NextVersionResolver
 {
-    private const MAJOR = 'major';
+    private const string MAJOR = 'major';
 
-    private const MINOR = 'minor';
+    private const string MINOR = 'minor';
 
     public function __construct(
         private VersionParser $versionParser
