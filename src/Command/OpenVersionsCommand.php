@@ -4,55 +4,47 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Command;
 
+use Entropy\Console\Contract\CommandInterface;
+use Entropy\Console\Enum\ExitCode;
+use Entropy\Console\Output\OutputPrinter;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
 use Rector\Jack\ComposerProcessor\OpenVersionsComposerProcessor;
 use Rector\Jack\Enum\ComposerKey;
 use Rector\Jack\OutdatedComposerFactory;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class OpenVersionsCommand extends Command
+final readonly class OpenVersionsCommand implements CommandInterface
 {
     public function __construct(
-        private readonly OutdatedComposerFactory $outdatedComposerFactory,
-        private readonly ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
-        private readonly OpenVersionsComposerProcessor $openVersionsComposerProcessor,
+        private OutdatedComposerFactory $outdatedComposerFactory,
+        private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
+        private OpenVersionsComposerProcessor $openVersionsComposerProcessor,
+        private OutputPrinter $outputPrinter,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    /**
+     * @param int $limit How many packages to open-up
+     * @param bool $dryRun Without any "composer.json" changes
+     * @param bool $dev Focus on dev packages only
+     * @param ?string $packagePrefix Name prefix to filter packages by
+     *
+     * @return ExitCode::*
+     */
+    public function run(int $limit = 5, bool $dryRun = false, bool $dev = false, ?string $packagePrefix = null): int
     {
-        $this->setName('open-versions');
-
-        $this->setDescription('Open composer.json version constraints to the very near next version');
-
-        $this->addOption('limit', null, InputOption::VALUE_REQUIRED, 'How many packages to open-up', 5);
-        $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Without any "composer.json" changes');
-        $this->addOption('dev', null, InputOption::VALUE_NONE, 'Focus on dev packages only');
-        $this->addOption('package-prefix', null, InputOption::VALUE_REQUIRED, 'Name prefix to filter packages by');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         $composerJsonFilePath = getcwd() . '/composer.json';
 
-        $symfonyStyle->writeln('<fg=green>Analyzing "composer.json" for outdated packages</>');
+        $this->outputPrinter->green('Analyzing "composer.json" for outdated packages');
 
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
 
         $responseJson = Json::decode($responseJsonContents, true);
         if (! isset($responseJson[ComposerKey::INSTALLED_KEY])) {
-            $symfonyStyle->success('All packages are up to date. You are the best!');
+            $this->outputPrinter->greenBackground('All packages are up to date. You are the best!');
 
-            return self::SUCCESS;
+            return ExitCode::SUCCESS;
         }
 
         $outdatedComposer = $this->outdatedComposerFactory->createOutdatedComposer(
@@ -61,14 +53,14 @@ final class OpenVersionsCommand extends Command
         );
 
         if ($outdatedComposer->count() === 0) {
-            $symfonyStyle->success('All packages are up to date. You are the best!');
+            $this->outputPrinter->greenBackground('All packages are up to date. You are the best!');
 
-            return self::SUCCESS;
+            return ExitCode::SUCCESS;
         }
 
-        $symfonyStyle->newLine();
+        $this->outputPrinter->newLine();
 
-        $symfonyStyle->writeln(
+        $this->outputPrinter->writeln(
             sprintf(
                 'Found <fg=yellow>%d outdated package%s</>',
                 $outdatedComposer->count(),
@@ -76,25 +68,20 @@ final class OpenVersionsCommand extends Command
             )
         );
 
-        $symfonyStyle->writeln(sprintf(
+        $this->outputPrinter->writeln(sprintf(
             ' * %d prod package%s',
             $outdatedComposer->getProdPackagesCount(),
             $outdatedComposer->getProdPackagesCount() === 1 ? '' : 's'
         ));
 
-        $symfonyStyle->writeln(sprintf(
+        $this->outputPrinter->writeln(sprintf(
             ' * %d dev package%s',
             $outdatedComposer->getDevPackagesCount(),
             $outdatedComposer->getDevPackagesCount() === 1 ? '' : 's'
-        ));
+        ), 1);
 
-        $symfonyStyle->newLine();
-        $symfonyStyle->title('Opening version constraints in "composer.json"');
-
-        $limit = (int) $input->getOption('limit');
-        $isDryRun = (bool) $input->getOption('dry-run');
-        $onlyDev = (bool) $input->getOption('dev');
-        $packagePrefix = $input->getOption('package-prefix');
+        $this->outputPrinter->yellow('Opening version constraints in "composer.json"');
+        $this->outputPrinter->yellow('==============================================');
 
         $composerJsonContents = FileSystem::read($composerJsonFilePath);
 
@@ -102,36 +89,49 @@ final class OpenVersionsCommand extends Command
             $composerJsonContents,
             $outdatedComposer,
             $limit,
-            $onlyDev,
+            $dev,
             $packagePrefix
         );
 
         $openedPackages = $changedPackageVersionsResult->getChangedPackageVersions();
         $changedComposerJson = $changedPackageVersionsResult->getComposerJsonContents();
 
-        if ($isDryRun === false) {
+        if ($dryRun === false) {
             // update composer.json file, only if no --dry-run
             FileSystem::write($composerJsonFilePath, rtrim($changedComposerJson) . PHP_EOL, null);
         }
 
-        $symfonyStyle->success(
+        $this->outputPrinter->greenBackground(
             sprintf(
-                '%d packages %s opened up to the next nearest version.%s%s "composer update" to push versions up',
+                '%d package%s %s opened up to the next nearest version.%s%s "composer update" to push versions up',
                 count($openedPackages),
-                $isDryRun ? 'would be (is "--dry-run")' : 'were',
+                count($openedPackages) === 1 ? '' : 's',
+                $dryRun ? 'would be (is "--dry-run")' : ((count($openedPackages) === 1) ? 'was' : 'were'),
                 PHP_EOL,
-                $isDryRun ? 'Then you would run' : 'Now run'
+                $dryRun ? 'Then you would run' : 'Now run'
             )
         );
 
+        $this->outputPrinter->newline();
+
         foreach ($openedPackages as $openedPackage) {
-            $symfonyStyle->writeln(sprintf(
+            $this->outputPrinter->writeln(sprintf(
                 ' * Opened "<fg=green>%s</>" package to "<fg=yellow>%s</>" version',
                 $openedPackage->getPackageName(),
                 $openedPackage->getNewVersion()
             ));
         }
 
-        return self::SUCCESS;
+        return ExitCode::SUCCESS;
+    }
+
+    public function getName(): string
+    {
+        return 'open-versions';
+    }
+
+    public function getDescription(): string
+    {
+        return 'Open composer.json version constraints to the very near next version';
     }
 }

@@ -1,8 +1,8 @@
 {
     "require-dev": {
-        "illuminate/container": "^9.0"
+        "nette/utils": "^3.4"
     },
     "conflict": {
-        "illuminate/container": "<9.0"
+        "nette/utils": "<3.4"
     }
 }

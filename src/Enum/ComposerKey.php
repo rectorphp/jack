@@ -6,5 +6,5 @@ namespace Rector\Jack\Enum;
 
 final class ComposerKey
 {
-    public const INSTALLED_KEY = 'installed';
+    public const string INSTALLED_KEY = 'installed';
 }

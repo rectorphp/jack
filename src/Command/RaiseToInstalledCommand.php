@@ -4,45 +4,27 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Command;
 
+use Entropy\Console\Contract\CommandInterface;
+use Entropy\Console\Enum\ExitCode;
+use Entropy\Console\Output\OutputPrinter;
 use Nette\Utils\FileSystem;
 use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
-final class RaiseToInstalledCommand extends Command
+final readonly class RaiseToInstalledCommand implements CommandInterface
 {
     public function __construct(
-        private readonly RaiseToInstalledComposerProcessor $raiseToInstalledComposerProcessor,
+        private RaiseToInstalledComposerProcessor $raiseToInstalledComposerProcessor,
+        private OutputPrinter $outputPrinter,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    /**
+     * @return ExitCode::*
+     */
+    public function run(bool $dryRun = false): int
     {
-        $this->setName('raise-to-installed');
-
-        $this->setDescription(
-            'Raise your version in "composer.json" to installed one to get the latest version available in any composer update'
-        );
-
-        $this->addOption(
-            'dry-run',
-            null,
-            InputOption::VALUE_NONE,
-            'Only show diff of "composer.json" changes, do not write the file'
-        );
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $isDryRun = (bool) $input->getOption('dry-run');
-
-        $symfonyStyle->writeln('<fg=green>Analyzing "/vendor/composer/installed.json" for versions</>');
+        $this->outputPrinter->green('Analyzing "/vendor/composer/installed.json" for versions');
 
         // load composer.json and replace versions in "require" and "require-dev",
         $composerJsonFilePath = getcwd() . '/composer.json';
@@ -54,26 +36,26 @@ final class RaiseToInstalledCommand extends Command
 
         $changedPackages = $changedPackageVersionsResult->getChangedPackageVersions();
         if ($changedPackages === []) {
-            $symfonyStyle->success('No changes made to "composer.json"');
-            return self::SUCCESS;
+            $this->outputPrinter->greenBackground('No changes made to "composer.json"');
+            return ExitCode::SUCCESS;
         }
 
-        if ($isDryRun === false) {
+        if ($dryRun === false) {
             $changedComposerJsonContents = $changedPackageVersionsResult->getComposerJsonContents();
             FileSystem::write($composerJsonFilePath, rtrim($changedComposerJsonContents) . PHP_EOL, null);
         }
 
-        $symfonyStyle->success(sprintf(
+        $this->outputPrinter->greenBackground(sprintf(
             '%d package%s %s changed to installed versions.%s%s "composer update --lock" to update "composer.lock" hash',
             count($changedPackages),
             count($changedPackages) === 1 ? '' : 's',
-            $isDryRun ? 'would be (is "--dry-run")' : 'were updated',
+            $dryRun ? 'would be (is "--dry-run")' : 'were updated',
             PHP_EOL,
-            $isDryRun ? 'Then you would run' : 'Now run',
+            $dryRun ? 'Then you would run' : 'Now run',
         ));
 
         foreach ($changedPackages as $changedPackage) {
-            $symfonyStyle->writeln(sprintf(
+            $this->outputPrinter->writeln(sprintf(
                 ' * <fg=green>%s</> (<fg=yellow>%s</> => <fg=yellow>%s</>)',
                 $changedPackage->getPackageName(),
                 $changedPackage->getOldVersion(),
@@ -81,8 +63,18 @@ final class RaiseToInstalledCommand extends Command
             ));
         }
 
-        $symfonyStyle->newLine();
+        $this->outputPrinter->newLine();
 
-        return self::SUCCESS;
+        return ExitCode::SUCCESS;
+    }
+
+    public function getName(): string
+    {
+        return 'raise-to-installed';
+    }
+
+    public function getDescription(): string
+    {
+        return 'Raise your version in "composer.json" to installed one to get the latest version available in any composer update';
     }
 }

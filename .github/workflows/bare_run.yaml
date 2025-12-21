@@ -20,4 +20,4 @@ jobs:
                     php-version: ${{ matrix.php }}
                     coverage: none
 
-            -   run: composer require rector/jack --dev --ansi
+            -   run: composer require rector/jack --dev

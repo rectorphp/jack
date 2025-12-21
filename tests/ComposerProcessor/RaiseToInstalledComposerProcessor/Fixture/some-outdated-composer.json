@@ -1,5 +1,5 @@
 {
     "require": {
-        "illuminate/container": "^9.0"
+        "nette/utils": "^2.0"
     }
 }

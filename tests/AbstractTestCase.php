@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Tests;
 
-use Illuminate\Container\Container;
+use Entropy\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Rector\Jack\DependencyInjection\ContainerFactory;
 
@@ -20,6 +20,7 @@ abstract class AbstractTestCase extends TestCase
 
     /**
      * @template TType of object
+     *
      * @param class-string<TType> $type
      * @return TType
      */

@@ -6,25 +6,23 @@
         "bin/jack"
     ],
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "composer/semver": "^3.4",
-        "illuminate/container": "^12.37",
-        "nette/utils": "^4.0",
-        "symfony/console": "^6.4",
-        "symfony/finder": "^7.3",
-        "symfony/process": "^7.3",
-        "webmozart/assert": "^1.12"
+        "entropy/entropy": "dev-main",
+        "nette/utils": "^4.1",
+        "symfony/process": "^7.4",
+        "webmozart/assert": "^2.0"
     },
     "require-dev": {
+        "phpecs/phpecs": "^2.2",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.5|^12.0",
+        "phpunit/phpunit": "^12.5",
         "rector/rector": "^2.2",
+        "rector/swiss-knife": "^2.3",
         "shipmonk/composer-dependency-analyser": "^1.8",
-        "phpecs/phpecs": "^2.2",
         "symplify/phpstan-extensions": "^12.0",
-        "symplify/vendor-patches": "^11.5",
-        "tomasvotruba/class-leak": "^2.0",
+        "tomasvotruba/class-leak": "^2.1",
         "tracy/tracy": "^2.11"
     },
     "autoload": {
@@ -41,7 +39,6 @@
         "sort-packages": true,
         "platform-check": false,
         "allow-plugins": {
-            "cweagans/composer-patches": true,
             "phpstan/extension-installer": true
         }
     },

@@ -17,5 +17,6 @@ return RectorConfig::configure()
         instanceOf: true,
         naming: true
     )
+    ->withSkip([\Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector::class])
     ->withImportNames(removeUnusedImports: true)
     ->withSkip(['*/scoper.php', '*/Source/*', '*/Fixture/*']);

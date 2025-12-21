@@ -30,11 +30,15 @@ jobs:
 
                     -
                         name: 'Jack: Outdated Breakpoint'
-                        run: ./bin/jack breakpoint --ansi --limit 3
+                        run: ./bin/jack breakpoint --limit 3
+
+                    -
+                        name: "Commented Code"
+                        run: vendor/bin/swiss-knife check-commented-code src tests --ansi
 
                     -
                         name: 'Jack: Open Versions'
-                        run: ./bin/jack open-versions --dry-run --ansi
+                        run: ./bin/jack open-versions --dry-run
 
                     -
                         name: 'Tests'
@@ -42,10 +46,10 @@ jobs:
 
                     -
                         name: 'Check Active Classes'
-                        run: vendor/bin/class-leak check bin src tests --ansi
+                        run: vendor/bin/class-leak check bin src tests --ansi --skip-type="\Entropy\Console\Contract\CommandInterface"
 
                     -
-                        name: 'Unusued check'
+                        name: 'Composer Dependency Analyser'
                         run: vendor/bin/composer-dependency-analyser
 
         name: ${{ matrix.actions.name }}
@@ -56,7 +60,7 @@ jobs:
             # see https://github.com/shivammathur/setup-php
             -   uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 8.2
+                    php-version: 8.3
                     coverage: none
 
             # composer install cache - https://github.com/ramsey/composer-install

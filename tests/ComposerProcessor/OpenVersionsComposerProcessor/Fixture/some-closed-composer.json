@@ -1,5 +1,5 @@
 {
     "require": {
-        "symfony/console": "^5.4"
+        "nette/utils": "^3.4"
     }
 }
