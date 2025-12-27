@@ -1,4 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php 
+namespace Jack202512;
 
 require __DIR__ . '/jack.php';

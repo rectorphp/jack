@@ -1,0 +1,64 @@
+<?php
+
+declare (strict_types=1);
+namespace Jack202512\Entropy\Container;
+
+use Jack202512\Entropy\Attributes\RelatedTest;
+use Jack202512\Entropy\FileSystem\FileFinder;
+use Jack202512\Entropy\Reflection\ClassNameResolver;
+use Jack202512\Entropy\Tests\Container\Autodiscovery\AutodiscoveryTest;
+use ReflectionClass;
+use Webmozart\Assert\Assert;
+/**
+ * Registers project classes to services automatically
+ */
+final class Autodiscovery
+{
+    /**
+     * @return array<class-string>
+     */
+    public function autodiscoverDirectory(string $directory) : array
+    {
+        $phpFiles = FileFinder::findPhpFiles($directory);
+        return $this->resolveClassNames($phpFiles);
+    }
+    private function shouldSkipClass(string $className) : bool
+    {
+        // @todo exclude classes with ValueObject, DTO, Enum, Exception in their namespace
+        // those are not services
+        $reflectionClass = new ReflectionClass($className);
+        // interface cannot be registered as a service
+        if ($reflectionClass->isInterface()) {
+            return \true;
+        }
+        if ($reflectionClass->isSubclassOf(\Throwable::class)) {
+            return \true;
+        }
+        if (\method_exists($reflectionClass, 'isEnum') ? $reflectionClass->isEnum() : \false) {
+            return \true;
+        }
+        // no parent class/interface, nothing to register
+        return $reflectionClass->getParentClass() === \false && $reflectionClass->getInterfaceNames() === [];
+    }
+    /**
+     * @param string[] $phpFiles
+     *
+     * @return array<class-string>
+     */
+    private function resolveClassNames(array $phpFiles) : array
+    {
+        Assert::allString($phpFiles);
+        $classNames = [];
+        foreach ($phpFiles as $phpFile) {
+            $className = ClassNameResolver::resolveFromFilePath($phpFile);
+            if ($className === null) {
+                continue;
+            }
+            if ($this->shouldSkipClass($className)) {
+                continue;
+            }
+            $classNames[] = $className;
+        }
+        return $classNames;
+    }
+}
