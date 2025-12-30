@@ -1,136 +1,98 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Rector\Jack\Command;
 
-use Entropy\Console\Contract\CommandInterface;
-use Entropy\Console\Enum\ExitCode;
-use Entropy\Console\Output\OutputPrinter;
-use Nette\Utils\Json;
+use Jack202512\Entropy\Console\Contract\CommandInterface;
+use Jack202512\Entropy\Console\Enum\ExitCode;
+use Jack202512\Entropy\Console\Output\OutputPrinter;
+use Jack202512\Nette\Utils\Json;
 use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
 use Rector\Jack\Enum\ComposerKey;
 use Rector\Jack\OutdatedComposerFactory;
-
-final readonly class BreakPointCommand implements CommandInterface
+final class BreakPointCommand implements CommandInterface
 {
-    public function __construct(
-        private OutdatedComposerFactory $outdatedComposerFactory,
-        private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
-        private OutputPrinter $outputPrinter,
-    ) {
+    /**
+     * @readonly
+     * @var \Rector\Jack\OutdatedComposerFactory
+     */
+    private $outdatedComposerFactory;
+    /**
+     * @readonly
+     * @var \Rector\Jack\Composer\ComposerOutdatedResponseProvider
+     */
+    private $composerOutdatedResponseProvider;
+    /**
+     * @readonly
+     * @var \Entropy\Console\Output\OutputPrinter
+     */
+    private $outputPrinter;
+    public function __construct(OutdatedComposerFactory $outdatedComposerFactory, ComposerOutdatedResponseProvider $composerOutdatedResponseProvider, OutputPrinter $outputPrinter)
+    {
+        $this->outdatedComposerFactory = $outdatedComposerFactory;
+        $this->composerOutdatedResponseProvider = $composerOutdatedResponseProvider;
+        $this->outputPrinter = $outputPrinter;
     }
-
     /**
      * @param bool $dev Focus on dev packages only
      * @param int $limit Maximum number of outdated major version packages
      * @param string[] $ignore Ignore packages by name, e.g. "symfony/" or "symfony/console"
      */
-    public function run(bool $dev = false, int $limit = 5, array $ignore = []): int
+    public function run(bool $dev = \false, int $limit = 5, array $ignore = []) : int
     {
         $this->outputPrinter->green('Analyzing "composer.json" for major outdated packages');
-
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
-
-        $responseJson = Json::decode($responseJsonContents, true);
-        if (! isset($responseJson[ComposerKey::INSTALLED_KEY])) {
+        $responseJson = Json::decode($responseJsonContents, \true);
+        if (!isset($responseJson[ComposerKey::INSTALLED_KEY])) {
             $this->outputPrinter->green('All packages are up to date');
-
             return ExitCode::SUCCESS;
         }
-
-        $composerJsonFilePath = getcwd() . '/composer.json';
-        $outdatedComposer = $this->outdatedComposerFactory->createOutdatedComposer(
-            array_filter(
-                $responseJson[ComposerKey::INSTALLED_KEY],
-                static function (array $package) use ($ignore): bool {
-                    foreach ($ignore as $ignoredPackage) {
-                        if (str_contains((string) $package['name'], $ignoredPackage)) {
-                            return false;
-                        }
-                    }
-
-                    return true;
+        $composerJsonFilePath = \getcwd() . '/composer.json';
+        $outdatedComposer = $this->outdatedComposerFactory->createOutdatedComposer(\array_filter($responseJson[ComposerKey::INSTALLED_KEY], static function (array $package) use($ignore) : bool {
+            foreach ($ignore as $ignoredPackage) {
+                if (\strpos((string) $package['name'], $ignoredPackage) !== \false) {
+                    return \false;
                 }
-            ),
-            $composerJsonFilePath
-        );
-
+            }
+            return \true;
+        }), $composerJsonFilePath);
         if ($outdatedComposer->count() === 0) {
             $this->outputPrinter->greenBackground('All packages are up to date');
             return ExitCode::SUCCESS;
         }
-
-        $this->outputPrinter->yellow(
-            sprintf(
-                'Found %d outdated package%s',
-                $outdatedComposer->count($dev),
-                $outdatedComposer->count($dev) > 1 ? 's' : ''
-            )
-        );
+        $this->outputPrinter->yellow(\sprintf('Found %d outdated package%s', $outdatedComposer->count($dev), $outdatedComposer->count($dev) > 1 ? 's' : ''));
         $this->outputPrinter->newline();
-
         foreach ($outdatedComposer->getPackages($dev) as $outdatedPackage) {
-            $this->outputPrinter->writeln(
-                sprintf('The "<fg=green>%s</>" package is outdated', $outdatedPackage->getName())
-            );
-
+            $this->outputPrinter->writeln(\sprintf('The "<fg=green>%s</>" package is outdated', $outdatedPackage->getName()));
             if ($outdatedPackage->getCurrentVersionAge()) {
-                $this->outputPrinter->writeln(sprintf(
-                    ' * Your version %s is <fg=%s>%s</>',
-                    $outdatedPackage->getCurrentVersion(),
-                    $outdatedPackage->isVeryOld() ? 'red' : 'yellow',
-                    $outdatedPackage->getCurrentVersionAge(),
-                ));
+                $this->outputPrinter->writeln(\sprintf(' * Your version %s is <fg=%s>%s</>', $outdatedPackage->getCurrentVersion(), $outdatedPackage->isVeryOld() ? 'red' : 'yellow', $outdatedPackage->getCurrentVersionAge()));
             } else {
                 // composer 2.7- compatible
-                $this->outputPrinter->writeln(sprintf(' * Your version is %s', $outdatedPackage->getCurrentVersion()));
+                $this->outputPrinter->writeln(\sprintf(' * Your version is %s', $outdatedPackage->getCurrentVersion()));
             }
-
-            $this->outputPrinter->writeln(sprintf(' * Bump to %s', $outdatedPackage->getLatestVersion()));
+            $this->outputPrinter->writeln(\sprintf(' * Bump to %s', $outdatedPackage->getLatestVersion()));
             $this->outputPrinter->newLine();
         }
-
         $this->outputPrinter->newLine();
         if ($outdatedComposer->count() >= $limit) {
             // to much → fail
-            $this->outputPrinter->redBackground(sprintf(
-                'There %s %d outdated package%s. Update couple of them to get under %d limit',
-                $outdatedComposer->count() > 1 ? 'are' : 'is',
-                $outdatedComposer->count(),
-                $outdatedComposer->count() > 1 ? 's' : '',
-                $limit
-            ));
-
+            $this->outputPrinter->redBackground(\sprintf('There %s %d outdated package%s. Update couple of them to get under %d limit', $outdatedComposer->count() > 1 ? 'are' : 'is', $outdatedComposer->count(), $outdatedComposer->count() > 1 ? 's' : '', $limit));
             return ExitCode::ERROR;
         }
-
-        if ($outdatedComposer->count() > max(1, $limit - 5)) {
+        if ($outdatedComposer->count() > \max(1, $limit - 5)) {
             // to much → fail
-            $this->outputPrinter->orangeBackground(sprintf(
-                'There are %d outdated packages. Soon, the count will go over %d limit and this job will fail.%sUpgrade in time',
-                $outdatedComposer->count(),
-                $limit,
-                PHP_EOL
-            ));
-
+            $this->outputPrinter->orangeBackground(\sprintf('There are %d outdated packages. Soon, the count will go over %d limit and this job will fail.%sUpgrade in time', $outdatedComposer->count(), $limit, \PHP_EOL));
             return ExitCode::SUCCESS;
         }
-
         // to many → fail
-        $this->outputPrinter->greenBackground(
-            sprintf('Still far away from limit %d. Good job keeping your project up to date!', $limit)
-        );
-
+        $this->outputPrinter->greenBackground(\sprintf('Still far away from limit %d. Good job keeping your project up to date!', $limit));
         return ExitCode::SUCCESS;
     }
-
-    public function getName(): string
+    public function getName() : string
     {
         return 'breakpoint';
     }
-
-    public function getDescription(): string
+    public function getDescription() : string
     {
         return 'Let your CI tell you, if there are too many major-version outdated packages';
     }
