@@ -24,9 +24,10 @@ final readonly class BreakPointCommand implements CommandInterface
     /**
      * @param bool $dev Focus on dev packages only
      * @param int $limit Maximum number of outdated major version packages
+     * @param int $minDays Minimum number of days a release has to be old to be considered outdated
      * @param string[] $ignore Ignore packages by name, e.g. "symfony/" or "symfony/console"
      */
-    public function run(bool $dev = false, int $limit = 5, array $ignore = []): int
+    public function run(bool $dev = false, int $limit = 5, int $minDays = 0, array $ignore = []): int
     {
         $this->outputPrinter->green('Analyzing "composer.json" for major and minor outdated packages');
 
@@ -40,14 +41,24 @@ final readonly class BreakPointCommand implements CommandInterface
         }
 
         $composerJsonFilePath = getcwd() . '/composer.json';
+        $now = new \DateTimeImmutable();
         $outdatedComposer = $this->outdatedComposerFactory->createOutdatedComposer(
             array_filter(
                 $responseJson[ComposerKey::INSTALLED_KEY],
-                static function (array $package) use ($ignore): bool {
+                static function (array $package) use ($ignore, $minDays, $now): bool {
                     foreach ($ignore as $ignoredPackage) {
                         if (str_contains((string) $package['name'], $ignoredPackage)) {
                             return false;
                         }
+                    }
+
+                    if ($minDays === 0) {
+                        return true;
+                    }
+
+                    $pageAgeInDays = (new \DateTimeImmutable($package['latest-release-date']))->diff($now)->days;
+                    if ($pageAgeInDays < $minDays) {
+                        return false;
                     }
 
                     return true;

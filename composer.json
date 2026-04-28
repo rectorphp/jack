@@ -6,18 +6,18 @@
         "bin/jack"
     ],
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "composer/semver": "^3.4",
         "entropy/entropy": "dev-main",
         "nette/utils": "^4.1",
-        "symfony/process": "^7.4",
+        "symfony/process": "^8.0",
         "webmozart/assert": "^2.0"
     },
     "require-dev": {
         "phpecs/phpecs": "^2.2",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^12.5",
+        "phpunit/phpunit": "^13.0",
         "rector/rector": "^2.2",
         "rector/swiss-knife": "^2.3",
         "shipmonk/composer-dependency-analyser": "^1.8",
