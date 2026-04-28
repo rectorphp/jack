@@ -28,7 +28,7 @@ final readonly class BreakPointCommand implements CommandInterface
      */
     public function run(bool $dev = false, int $limit = 5, array $ignore = []): int
     {
-        $this->outputPrinter->green('Analyzing "composer.json" for major outdated packages');
+        $this->outputPrinter->green('Analyzing "composer.json" for major and minor outdated packages');
 
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
 
