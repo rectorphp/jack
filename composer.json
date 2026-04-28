@@ -6,7 +6,7 @@
         "bin/jack"
     ],
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "composer/semver": "^3.4",
         "entropy/entropy": "dev-main",
         "nette/utils": "^4.1",
