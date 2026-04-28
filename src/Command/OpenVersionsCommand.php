@@ -1,29 +1,46 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Rector\Jack\Command;
 
-use Entropy\Console\Contract\CommandInterface;
-use Entropy\Console\Enum\ExitCode;
-use Entropy\Console\Output\OutputPrinter;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
+use Jack202604\Entropy\Console\Contract\CommandInterface;
+use Jack202604\Entropy\Console\Enum\ExitCode;
+use Jack202604\Entropy\Console\Output\OutputPrinter;
+use Jack202604\Nette\Utils\FileSystem;
+use Jack202604\Nette\Utils\Json;
 use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
 use Rector\Jack\ComposerProcessor\OpenVersionsComposerProcessor;
 use Rector\Jack\Enum\ComposerKey;
 use Rector\Jack\OutdatedComposerFactory;
-
-final readonly class OpenVersionsCommand implements CommandInterface
+final class OpenVersionsCommand implements CommandInterface
 {
-    public function __construct(
-        private OutdatedComposerFactory $outdatedComposerFactory,
-        private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
-        private OpenVersionsComposerProcessor $openVersionsComposerProcessor,
-        private OutputPrinter $outputPrinter,
-    ) {
+    /**
+     * @readonly
+     * @var \Rector\Jack\OutdatedComposerFactory
+     */
+    private $outdatedComposerFactory;
+    /**
+     * @readonly
+     * @var \Rector\Jack\Composer\ComposerOutdatedResponseProvider
+     */
+    private $composerOutdatedResponseProvider;
+    /**
+     * @readonly
+     * @var \Rector\Jack\ComposerProcessor\OpenVersionsComposerProcessor
+     */
+    private $openVersionsComposerProcessor;
+    /**
+     * @readonly
+     * @var \Entropy\Console\Output\OutputPrinter
+     */
+    private $outputPrinter;
+    public function __construct(OutdatedComposerFactory $outdatedComposerFactory, ComposerOutdatedResponseProvider $composerOutdatedResponseProvider, OpenVersionsComposerProcessor $openVersionsComposerProcessor, OutputPrinter $outputPrinter)
+    {
+        $this->outdatedComposerFactory = $outdatedComposerFactory;
+        $this->composerOutdatedResponseProvider = $composerOutdatedResponseProvider;
+        $this->openVersionsComposerProcessor = $openVersionsComposerProcessor;
+        $this->outputPrinter = $outputPrinter;
     }
-
     /**
      * @param int $limit How many packages to open-up
      * @param bool $dryRun Without any "composer.json" changes
@@ -32,105 +49,47 @@ final readonly class OpenVersionsCommand implements CommandInterface
      *
      * @return ExitCode::*
      */
-    public function run(int $limit = 5, bool $dryRun = false, bool $dev = false, ?string $packagePrefix = null): int
+    public function run(int $limit = 5, bool $dryRun = \false, bool $dev = \false, ?string $packagePrefix = null) : int
     {
-        $composerJsonFilePath = getcwd() . '/composer.json';
-
+        $composerJsonFilePath = \getcwd() . '/composer.json';
         $this->outputPrinter->green('Analyzing "composer.json" for outdated packages');
-
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
-
-        $responseJson = Json::decode($responseJsonContents, true);
-        if (! isset($responseJson[ComposerKey::INSTALLED_KEY])) {
+        $responseJson = Json::decode($responseJsonContents, \true);
+        if (!isset($responseJson[ComposerKey::INSTALLED_KEY])) {
             $this->outputPrinter->greenBackground('All packages are up to date. You are the best!');
-
             return ExitCode::SUCCESS;
         }
-
-        $outdatedComposer = $this->outdatedComposerFactory->createOutdatedComposer(
-            $responseJson[ComposerKey::INSTALLED_KEY],
-            $composerJsonFilePath
-        );
-
+        $outdatedComposer = $this->outdatedComposerFactory->createOutdatedComposer($responseJson[ComposerKey::INSTALLED_KEY], $composerJsonFilePath);
         if ($outdatedComposer->count() === 0) {
             $this->outputPrinter->greenBackground('All packages are up to date. You are the best!');
-
             return ExitCode::SUCCESS;
         }
-
         $this->outputPrinter->newLine();
-
-        $this->outputPrinter->writeln(
-            sprintf(
-                'Found <fg=yellow>%d outdated package%s</>',
-                $outdatedComposer->count(),
-                $outdatedComposer->count() === 1 ? '' : 's'
-            )
-        );
-
-        $this->outputPrinter->writeln(sprintf(
-            ' * %d prod package%s',
-            $outdatedComposer->getProdPackagesCount(),
-            $outdatedComposer->getProdPackagesCount() === 1 ? '' : 's'
-        ));
-
-        $this->outputPrinter->writeln(sprintf(
-            ' * %d dev package%s',
-            $outdatedComposer->getDevPackagesCount(),
-            $outdatedComposer->getDevPackagesCount() === 1 ? '' : 's'
-        ), 1);
-
+        $this->outputPrinter->writeln(\sprintf('Found <fg=yellow>%d outdated package%s</>', $outdatedComposer->count(), $outdatedComposer->count() === 1 ? '' : 's'));
+        $this->outputPrinter->writeln(\sprintf(' * %d prod package%s', $outdatedComposer->getProdPackagesCount(), $outdatedComposer->getProdPackagesCount() === 1 ? '' : 's'));
+        $this->outputPrinter->writeln(\sprintf(' * %d dev package%s', $outdatedComposer->getDevPackagesCount(), $outdatedComposer->getDevPackagesCount() === 1 ? '' : 's'), 1);
         $this->outputPrinter->yellow('Opening version constraints in "composer.json"');
         $this->outputPrinter->yellow('==============================================');
-
         $composerJsonContents = FileSystem::read($composerJsonFilePath);
-
-        $changedPackageVersionsResult = $this->openVersionsComposerProcessor->process(
-            $composerJsonContents,
-            $outdatedComposer,
-            $limit,
-            $dev,
-            $packagePrefix
-        );
-
+        $changedPackageVersionsResult = $this->openVersionsComposerProcessor->process($composerJsonContents, $outdatedComposer, $limit, $dev, $packagePrefix);
         $openedPackages = $changedPackageVersionsResult->getChangedPackageVersions();
         $changedComposerJson = $changedPackageVersionsResult->getComposerJsonContents();
-
-        if ($dryRun === false) {
+        if ($dryRun === \false) {
             // update composer.json file, only if no --dry-run
-            FileSystem::write($composerJsonFilePath, rtrim($changedComposerJson) . PHP_EOL, null);
+            FileSystem::write($composerJsonFilePath, \rtrim($changedComposerJson) . \PHP_EOL, null);
         }
-
-        $this->outputPrinter->greenBackground(
-            sprintf(
-                '%d package%s %s opened up to the next nearest version.%s%s "composer update" to push versions up',
-                count($openedPackages),
-                count($openedPackages) === 1 ? '' : 's',
-                $dryRun ? 'would be (is "--dry-run")' : ((count($openedPackages) === 1) ? 'was' : 'were'),
-                PHP_EOL,
-                $dryRun ? 'Then you would run' : 'Now run'
-            )
-        );
-
+        $this->outputPrinter->greenBackground(\sprintf('%d package%s %s opened up to the next nearest version.%s%s "composer update" to push versions up', \count($openedPackages), \count($openedPackages) === 1 ? '' : 's', $dryRun ? 'would be (is "--dry-run")' : (\count($openedPackages) === 1 ? 'was' : 'were'), \PHP_EOL, $dryRun ? 'Then you would run' : 'Now run'));
         $this->outputPrinter->newline();
-
         foreach ($openedPackages as $openedPackage) {
-            $this->outputPrinter->writeln(sprintf(
-                ' * Opened "<fg=green>%s</>" package to "<fg=yellow>%s</>" version',
-                $openedPackage->getPackageName(),
-                $openedPackage->getNewVersion()
-            ));
+            $this->outputPrinter->writeln(\sprintf(' * Opened "<fg=green>%s</>" package to "<fg=yellow>%s</>" version', $openedPackage->getPackageName(), $openedPackage->getNewVersion()));
         }
-
         return ExitCode::SUCCESS;
     }
-
-    public function getName(): string
+    public function getName() : string
     {
         return 'open-versions';
     }
-
-    public function getDescription(): string
+    public function getDescription() : string
     {
         return 'Open composer.json version constraints to the very near next version';
     }

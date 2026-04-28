@@ -1,7 +1,0 @@
-composer.lock
-/vendor
-
-.phpunit.cache
-
-tmp
-/.idea/

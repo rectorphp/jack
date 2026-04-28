@@ -1,6 +1,0 @@
-{
-    "name": "some/project",
-    "require": {
-        "symfony/console": "^3.5"
-    }
-}
