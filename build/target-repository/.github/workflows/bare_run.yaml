@@ -20,4 +20,5 @@ jobs:
                     php-version: ${{ matrix.php_version }}
                     coverage: none
 
-            -   run: php bin/jack --help
+            # no --ansi here, the entropy console does not support it
+            -   run: php bin/jack list

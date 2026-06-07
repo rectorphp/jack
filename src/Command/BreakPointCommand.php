@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Command;
 
+use DateTimeImmutable;
 use Entropy\Console\Contract\CommandInterface;
 use Entropy\Console\Enum\ExitCode;
 use Entropy\Console\Output\OutputPrinter;
@@ -41,7 +42,7 @@ final readonly class BreakPointCommand implements CommandInterface
         }
 
         $composerJsonFilePath = getcwd() . '/composer.json';
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $outdatedComposer = $this->outdatedComposerFactory->createOutdatedComposer(
             array_filter(
                 $responseJson[ComposerKey::INSTALLED_KEY],
@@ -56,12 +57,8 @@ final readonly class BreakPointCommand implements CommandInterface
                         return true;
                     }
 
-                    $pageAgeInDays = (new \DateTimeImmutable($package['latest-release-date']))->diff($now)->days;
-                    if ($pageAgeInDays < $minDays) {
-                        return false;
-                    }
-
-                    return true;
+                    $pageAgeInDays = new DateTimeImmutable($package['latest-release-date'])->diff($now)->days;
+                    return $pageAgeInDays >= $minDays;
                 }
             ),
             $composerJsonFilePath
