@@ -1,7 +1,7 @@
 {
-    "name": "rector/jack",
+    "name": "anywherephp/jack",
     "description": "Swiss knife in pocket of every upgrade architect",
-    "license": "MIT",
+    "license": "proprietary",
     "require": {
         "php": ">=7.2"
     },
