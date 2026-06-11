@@ -36,4 +36,28 @@ final class OutdatedComposerFactoryTest extends AbstractTestCase
 
         $this->assertCount(0, $outdatedComposer->getDevPackages());
     }
+
+    public function testSkipsPackageWithSameCurrentAndLatestVersion(): void
+    {
+        $outdatedComposerFactory = $this->make(OutdatedComposerFactory::class);
+
+        $outdatedComposer = $outdatedComposerFactory->createOutdatedComposer([
+            [
+                'name' => 'phpecs/phpecs',
+                'direct-dependency' => true,
+                'homepage' => 'https://github.com/easy-coding-standard/easy-coding-standard',
+                'source' => 'https://github.com/easy-coding-standard/easy-coding-standard/tree/2.3.0',
+                'version' => '2.3.0',
+                'release-age' => '5 months old',
+                'release-date' => '2026-01-12T10:00:00+00:00',
+                'latest' => '2.3',
+                'latest-status' => 'update-possible',
+                'latest-release-date' => '2026-01-12T10:00:00+00:00',
+                'description' => 'Use coding standard fixers and sniffs with 0-knowledge',
+                'abandoned' => false,
+            ],
+        ], __DIR__ . '/Fixture/some-composer.json');
+
+        $this->assertCount(0, $outdatedComposer->getPackages());
+    }
 }
