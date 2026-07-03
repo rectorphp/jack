@@ -7,6 +7,7 @@
     ],
     "require": {
         "php": ">=8.4",
+        "boundwize/jsonrecast": "^0.2.1",
         "composer/semver": "^3.4",
         "entropy/entropy": "^0.4",
         "nette/utils": "^4.1",
