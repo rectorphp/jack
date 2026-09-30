@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Tests\ComposerProcessor\RaiseToInstalledComposerProcessor;
 
-use Nette\Utils\FileSystem;
+use Entropy\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
 use Rector\Jack\Tests\AbstractTestCase;

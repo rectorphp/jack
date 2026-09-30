@@ -7,8 +7,8 @@ namespace Rector\Jack\Command;
 use Entropy\Console\Contract\CommandInterface;
 use Entropy\Console\Enum\ExitCode;
 use Entropy\Console\Output\OutputPrinter;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
+use Entropy\Utils\FileSystem;
+use Entropy\Utils\Json;
 use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
 use Rector\Jack\ComposerProcessor\OpenVersionsComposerProcessor;
 use Rector\Jack\Enum\ComposerKey;
@@ -40,7 +40,7 @@ final readonly class OpenVersionsCommand implements CommandInterface
 
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
 
-        $responseJson = Json::decode($responseJsonContents, true);
+        $responseJson = Json::decode($responseJsonContents);
         if (! isset($responseJson[ComposerKey::INSTALLED_KEY])) {
             $this->outputPrinter->greenBackground('All packages are up to date. You are the best!');
 
@@ -98,7 +98,7 @@ final readonly class OpenVersionsCommand implements CommandInterface
 
         if ($dryRun === false) {
             // update composer.json file, only if no --dry-run
-            FileSystem::write($composerJsonFilePath, rtrim($changedComposerJson) . PHP_EOL, null);
+            FileSystem::write($composerJsonFilePath, rtrim($changedComposerJson) . PHP_EOL);
         }
 
         $this->outputPrinter->greenBackground(

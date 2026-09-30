@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Jack\FileSystem;
 
-use Nette\Utils\Strings;
+use Entropy\Utils\Regex;
 
 final class ComposerJsonPackageVersionUpdater
 {
     public static function update(string $composerJsonContents, string $packageName, string $newVersion): string
     {
         // replace using regex, to keep original composer.json format
-        $allChanges = Strings::replace(
+        $allChanges = Regex::replace(
             $composerJsonContents,
             // find
             sprintf('#"%s": "(.*?)"#', $packageName),
@@ -23,10 +23,10 @@ final class ComposerJsonPackageVersionUpdater
 
         foreach ($skippedKeys as $skippedKey) {
             $regexKeyContent = sprintf('#"%s"\s*:\s*{[^}]*}#', $skippedKey);
-            $skippedContent = Strings::match($composerJsonContents, $regexKeyContent);
+            $skippedContent = Regex::match($composerJsonContents, $regexKeyContent);
 
-            if ($skippedContent !== null) {
-                $allChanges = Strings::replace($allChanges, $regexKeyContent, $skippedContent[0]);
+            if (isset($skippedContent[0]) && is_string($skippedContent[0])) {
+                $allChanges = Regex::replace($allChanges, $regexKeyContent, $skippedContent[0]);
             }
         }
 
