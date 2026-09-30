@@ -16,8 +16,7 @@ final readonly class OutdatedPackage
         private string $latestVersion,
         // nullable on composer 2.7-
         private ?string $currentVersionAge,
-    ) {
-    }
+    ) {}
 
     public function getName(): string
     {

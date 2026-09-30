@@ -19,8 +19,7 @@ final readonly class NextVersionResolver
 
     public function __construct(
         private VersionParser $versionParser
-    ) {
-    }
+    ) {}
 
     public function resolve(string $packageName, string $composerVersion): string
     {

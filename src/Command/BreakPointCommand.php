@@ -19,8 +19,7 @@ final readonly class BreakPointCommand implements CommandInterface
         private OutdatedComposerFactory $outdatedComposerFactory,
         private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
         private OutputPrinter $outputPrinter,
-    ) {
-    }
+    ) {}
 
     /**
      * @param bool $dev Focus on dev packages only

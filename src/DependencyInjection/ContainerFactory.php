@@ -16,7 +16,7 @@ final class ContainerFactory
         // register with container itself, so the help printer can be resolved lazily without circular dependency
         $container->service(
             ListCommand::class,
-            static fn (Container $container): ListCommand => new ListCommand($container)
+            static fn(Container $container): ListCommand => new ListCommand($container)
         );
 
         $container->autodiscover(__DIR__ . '/../../src');
