@@ -14,14 +14,27 @@ use Rector\Jack\ComposerProcessor\OpenVersionsComposerProcessor;
 use Rector\Jack\Enum\ComposerKey;
 use Rector\Jack\OutdatedComposerFactory;
 
-final readonly class OpenVersionsCommand implements CommandInterface
+final class OpenVersionsCommand implements CommandInterface
 {
+    private OutdatedComposerFactory $outdatedComposerFactory;
+
+    private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider;
+
+    private OpenVersionsComposerProcessor $openVersionsComposerProcessor;
+
+    private OutputPrinter $outputPrinter;
+
     public function __construct(
-        private OutdatedComposerFactory $outdatedComposerFactory,
-        private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
-        private OpenVersionsComposerProcessor $openVersionsComposerProcessor,
-        private OutputPrinter $outputPrinter,
-    ) {}
+        OutdatedComposerFactory $outdatedComposerFactory,
+        ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
+        OpenVersionsComposerProcessor $openVersionsComposerProcessor,
+        OutputPrinter $outputPrinter
+    ) {
+        $this->outdatedComposerFactory = $outdatedComposerFactory;
+        $this->composerOutdatedResponseProvider = $composerOutdatedResponseProvider;
+        $this->openVersionsComposerProcessor = $openVersionsComposerProcessor;
+        $this->outputPrinter = $outputPrinter;
+    }
 
     /**
      * @param int $limit How many packages to open-up

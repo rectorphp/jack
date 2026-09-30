@@ -11,15 +11,18 @@ use Rector\Jack\Exception\ShouldNotHappenException;
 /**
  * @see \Rector\Jack\Tests\Composer\NextVersionResolver\NextVersionResolverTest
  */
-final readonly class NextVersionResolver
+final class NextVersionResolver
 {
-    private const string MAJOR = 'major';
+    private const MAJOR = 'major';
 
-    private const string MINOR = 'minor';
+    private const MINOR = 'minor';
 
-    public function __construct(
-        private VersionParser $versionParser
-    ) {}
+    private VersionParser $versionParser;
+
+    public function __construct(VersionParser $versionParser)
+    {
+        $this->versionParser = $versionParser;
+    }
 
     public function resolve(string $packageName, string $composerVersion): string
     {

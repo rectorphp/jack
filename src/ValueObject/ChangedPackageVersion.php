@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace Rector\Jack\ValueObject;
 
-final readonly class ChangedPackageVersion
+final class ChangedPackageVersion
 {
-    public function __construct(
-        private string $packageName,
-        private string $oldVersion,
-        private string $newVersion,
-    ) {}
+    private string $packageName;
+
+    private string $oldVersion;
+
+    private string $newVersion;
+
+    public function __construct(string $packageName, string $oldVersion, string $newVersion)
+    {
+        $this->packageName = $packageName;
+        $this->oldVersion = $oldVersion;
+        $this->newVersion = $newVersion;
+    }
 
     public function getPackageName(): string
     {

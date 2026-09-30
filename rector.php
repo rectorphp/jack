@@ -6,7 +6,7 @@ use Rector\Config\RectorConfig;
 
 return RectorConfig::configure()
     ->withPaths([__DIR__ . '/src', __DIR__ . '/tests'])
-    ->withPhpSets()
+    ->withPhpSets(php74: true)
     ->withPreparedSets(
         codeQuality: true,
         deadCode: true,
@@ -17,6 +17,5 @@ return RectorConfig::configure()
         instanceOf: true,
         naming: true
     )
-    ->withSkip([\Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector::class])
     ->withImportNames(removeUnusedImports: true)
-    ->withSkip(['*/scoper.php', '*/Source/*', '*/Fixture/*']);
+    ->withSkip(['*/Source/*', '*/Fixture/*']);

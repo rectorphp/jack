@@ -13,11 +13,14 @@ use Rector\Jack\ValueObject\OutdatedComposer;
 /**
  * @see \Rector\Jack\Tests\ComposerProcessor\OpenVersionsComposerProcessor\OpenVersionsComposerProcessorTest
  */
-final readonly class OpenVersionsComposerProcessor
+final class OpenVersionsComposerProcessor
 {
-    public function __construct(
-        private NextVersionResolver $nextVersionResolver
-    ) {}
+    private NextVersionResolver $nextVersionResolver;
+
+    public function __construct(NextVersionResolver $nextVersionResolver)
+    {
+        $this->nextVersionResolver = $nextVersionResolver;
+    }
 
     public function process(
         string $composerJsonContents,

@@ -1,0 +1,61 @@
+name: Tests
+
+on:
+    pull_request: null
+    push:
+        branches:
+            - main
+
+jobs:
+    tests:
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: ['7.4', '8.2', '8.5']
+
+        name: PHP ${{ matrix.php-version }}
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v5
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    coverage: none
+
+            # analysis tools require PHP 8.2+ and are irrelevant to the test run;
+            # drop them so the low-PHP jobs install a clean, 7.4-compatible dependency set
+            -   run: composer remove --dev --no-update tracy/tracy symplify/easy-coding-standard phpstan/phpstan phpstan/extension-installer symplify/phpstan-rules rector/rector rector/swiss-knife tomasvotruba/class-leak shipmonk/composer-dependency-analyser
+
+            -   run: composer update --no-progress --prefer-stable
+
+            -   name: Tests
+                run: vendor/bin/phpunit
+
+            -   name: Smoke run CLI app
+                run: bin/jack list
+
+    lint:
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: ['7.4', '8.5']
+
+        name: PHP Linter ${{ matrix.php-version }}
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v5
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    coverage: none
+
+            # analysis tools require PHP 8.2+; drop them so the 7.4 job installs a clean dependency set
+            -   run: composer remove --dev --no-update tracy/tracy symplify/easy-coding-standard phpstan/phpstan phpstan/extension-installer symplify/phpstan-rules rector/rector rector/swiss-knife tomasvotruba/class-leak shipmonk/composer-dependency-analyser
+
+            -   run: composer update --no-progress --prefer-stable
+
+            -   run: vendor/bin/parallel-lint src bin tests

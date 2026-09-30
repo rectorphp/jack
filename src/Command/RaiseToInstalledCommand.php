@@ -11,12 +11,19 @@ use Entropy\Utils\FileSystem;
 use Entropy\Validation\Assert;
 use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
 
-final readonly class RaiseToInstalledCommand implements CommandInterface
+final class RaiseToInstalledCommand implements CommandInterface
 {
+    private RaiseToInstalledComposerProcessor $raiseToInstalledComposerProcessor;
+
+    private OutputPrinter $outputPrinter;
+
     public function __construct(
-        private RaiseToInstalledComposerProcessor $raiseToInstalledComposerProcessor,
-        private OutputPrinter $outputPrinter,
-    ) {}
+        RaiseToInstalledComposerProcessor $raiseToInstalledComposerProcessor,
+        OutputPrinter $outputPrinter
+    ) {
+        $this->raiseToInstalledComposerProcessor = $raiseToInstalledComposerProcessor;
+        $this->outputPrinter = $outputPrinter;
+    }
 
     /**
      * @return ExitCode::*

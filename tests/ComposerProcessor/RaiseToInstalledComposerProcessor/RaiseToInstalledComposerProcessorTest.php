@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Tests\ComposerProcessor\RaiseToInstalledComposerProcessor;
 
+use Composer\Semver\VersionParser;
 use Entropy\Utils\FileSystem;
-use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\Jack\Composer\InstalledVersionResolver;
 use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
 use Rector\Jack\Tests\AbstractTestCase;
 use Rector\Jack\ValueObject\ChangedPackageVersion;
@@ -18,7 +19,12 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->raiseToInstalledComposerProcessor = $this->make(RaiseToInstalledComposerProcessor::class);
+        // hermetic installed versions, so the test does not depend on the real vendor/ state
+        $installedVersionResolver = new InstalledVersionResolver(__DIR__ . '/Fixture/installed.json');
+        $this->raiseToInstalledComposerProcessor = new RaiseToInstalledComposerProcessor(
+            new VersionParser(),
+            $installedVersionResolver
+        );
     }
 
     public function test(): void
@@ -87,7 +93,9 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
         ];
     }
 
-    #[DataProvider('provideSkipSuggestChangeFiles')]
+    /**
+     * @dataProvider provideSkipSuggestChangeFiles
+     */
     public function testSkipSuggestChange(string $file, string $changedFileContent): void
     {
         $composerJsonContents = FileSystem::read($file);
