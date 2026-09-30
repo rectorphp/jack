@@ -6,6 +6,4 @@ namespace Rector\Jack\Exception;
 
 use Exception;
 
-final class ShouldNotHappenException extends Exception
-{
-}
+final class ShouldNotHappenException extends Exception {}

@@ -10,9 +10,7 @@ final readonly class ChangedPackageVersion
         private string $packageName,
         private string $oldVersion,
         private string $newVersion,
-    ) {
-
-    }
+    ) {}
 
     public function getPackageName(): string
     {

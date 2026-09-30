@@ -34,7 +34,7 @@ final readonly class OutdatedComposer
     {
         return array_filter(
             $this->outdatedPackages,
-            fn (OutdatedPackage $outdatedPackage): bool => $outdatedPackage->isProd()
+            fn(OutdatedPackage $outdatedPackage): bool => $outdatedPackage->isProd()
         );
     }
 
@@ -45,7 +45,7 @@ final readonly class OutdatedComposer
     {
         return array_filter(
             $this->outdatedPackages,
-            fn (OutdatedPackage $outdatedPackage): bool => ! $outdatedPackage->isProd()
+            fn(OutdatedPackage $outdatedPackage): bool => ! $outdatedPackage->isProd()
         );
     }
 
@@ -79,7 +79,7 @@ final readonly class OutdatedComposer
         if ($packagePrefix !== null) {
             return array_filter(
                 $outdatedPackages,
-                fn (OutdatedPackage $outdatedPackage): bool => str_starts_with(
+                fn(OutdatedPackage $outdatedPackage): bool => str_starts_with(
                     $outdatedPackage->getName(),
                     $packagePrefix
                 )

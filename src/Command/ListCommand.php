@@ -13,8 +13,7 @@ final readonly class ListCommand implements CommandInterface
 {
     public function __construct(
         private Container $container,
-    ) {
-    }
+    ) {}
 
     public function run(): int
     {

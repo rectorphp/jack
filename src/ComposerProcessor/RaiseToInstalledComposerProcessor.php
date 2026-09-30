@@ -21,8 +21,7 @@ final readonly class RaiseToInstalledComposerProcessor
     public function __construct(
         private VersionParser $versionParser,
         private InstalledVersionResolver $installedVersionResolver,
-    ) {
-    }
+    ) {}
 
     public function process(string $composerJsonContents): ChangedPackageVersionsResult
     {

@@ -16,8 +16,7 @@ final readonly class RaiseToInstalledCommand implements CommandInterface
     public function __construct(
         private RaiseToInstalledComposerProcessor $raiseToInstalledComposerProcessor,
         private OutputPrinter $outputPrinter,
-    ) {
-    }
+    ) {}
 
     /**
      * @return ExitCode::*

@@ -16,8 +16,7 @@ final readonly class OutdatedComposerFactory
 {
     public function __construct(
         private OutdatedPackageMapper $outdatedPackageMapper
-    ) {
-    }
+    ) {}
 
     /**
      * @param mixed[] $installedPackages
@@ -30,7 +29,7 @@ final readonly class OutdatedComposerFactory
         // filter out false positives, where the latest version is the same as the current one
         $nonDevOutdatedPackages = array_filter(
             $outdatedPackages,
-            fn (OutdatedPackage $outdatedPackage): bool => ! $outdatedPackage->lastestIsDevBranch()
+            fn(OutdatedPackage $outdatedPackage): bool => ! $outdatedPackage->lastestIsDevBranch()
                 && ! VersionComparator::areVersionsEqual(
                     $outdatedPackage->getCurrentVersion(),
                     $outdatedPackage->getLatestVersion()

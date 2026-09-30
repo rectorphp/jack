@@ -21,8 +21,7 @@ final readonly class OpenVersionsCommand implements CommandInterface
         private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
         private OpenVersionsComposerProcessor $openVersionsComposerProcessor,
         private OutputPrinter $outputPrinter,
-    ) {
-    }
+    ) {}
 
     /**
      * @param int $limit How many packages to open-up

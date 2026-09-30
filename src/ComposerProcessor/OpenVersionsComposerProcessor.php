@@ -17,8 +17,7 @@ final readonly class OpenVersionsComposerProcessor
 {
     public function __construct(
         private NextVersionResolver $nextVersionResolver
-    ) {
-    }
+    ) {}
 
     public function process(
         string $composerJsonContents,
