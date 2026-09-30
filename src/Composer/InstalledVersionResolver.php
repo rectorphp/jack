@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Composer;
 
+use Rector\Jack\Exception\ShouldNotHappenException;
 use Rector\Jack\Utils\JsonFileLoader;
-use Webmozart\Assert\Assert;
 
 final class InstalledVersionResolver
 {
@@ -17,7 +17,9 @@ final class InstalledVersionResolver
         $installedJsonFilePath = getcwd() . '/vendor/composer/installed.json';
 
         $installedJson = JsonFileLoader::loadFileToJson($installedJsonFilePath);
-        Assert::keyExists($installedJson, 'packages');
+        if (! array_key_exists('packages', $installedJson)) {
+            throw new ShouldNotHappenException('Missing "packages" key in "installed.json"');
+        }
 
         $installedPackagesToVersions = [];
         foreach ($installedJson['packages'] as $installedPackage) {

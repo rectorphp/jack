@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Composer;
 
-use Nette\Utils\FileSystem;
+use Entropy\Utils\FileSystem;
 use Symfony\Component\Process\Process;
 
 final class ComposerOutdatedResponseProvider
@@ -34,7 +34,8 @@ final class ComposerOutdatedResponseProvider
         $processResult = $composerOutdatedProcess->getOutput();
 
         if (is_string($composerOutdatedFilePath)) {
-            FileSystem::write($composerOutdatedFilePath, $processResult, null);
+            FileSystem::ensureDirectoryExists(dirname($composerOutdatedFilePath));
+            FileSystem::write($composerOutdatedFilePath, $processResult);
         }
 
         return $processResult;

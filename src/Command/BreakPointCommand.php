@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use Entropy\Console\Contract\CommandInterface;
 use Entropy\Console\Enum\ExitCode;
 use Entropy\Console\Output\OutputPrinter;
-use Nette\Utils\Json;
+use Entropy\Utils\Json;
 use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
 use Rector\Jack\Enum\ComposerKey;
 use Rector\Jack\OutdatedComposerFactory;
@@ -34,7 +34,7 @@ final readonly class BreakPointCommand implements CommandInterface
 
         $responseJsonContents = $this->composerOutdatedResponseProvider->provide();
 
-        $responseJson = Json::decode($responseJsonContents, true);
+        $responseJson = Json::decode($responseJsonContents);
         if (! isset($responseJson[ComposerKey::INSTALLED_KEY])) {
             $this->outputPrinter->green('All packages are up to date');
 

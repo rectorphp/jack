@@ -7,9 +7,9 @@ namespace Rector\Jack\Command;
 use Entropy\Console\Contract\CommandInterface;
 use Entropy\Console\Enum\ExitCode;
 use Entropy\Console\Output\OutputPrinter;
-use Nette\Utils\FileSystem;
+use Entropy\Utils\FileSystem;
+use Entropy\Validation\Assert;
 use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
-use Webmozart\Assert\Assert;
 
 final readonly class RaiseToInstalledCommand implements CommandInterface
 {
@@ -42,7 +42,7 @@ final readonly class RaiseToInstalledCommand implements CommandInterface
 
         if ($dryRun === false) {
             $changedComposerJsonContents = $changedPackageVersionsResult->getComposerJsonContents();
-            FileSystem::write($composerJsonFilePath, rtrim($changedComposerJsonContents) . PHP_EOL, null);
+            FileSystem::write($composerJsonFilePath, rtrim($changedComposerJsonContents) . PHP_EOL);
         }
 
         $this->outputPrinter->greenBackground(sprintf(

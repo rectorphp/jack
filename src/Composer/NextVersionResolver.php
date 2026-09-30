@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Jack\Composer;
 
 use Composer\Semver\VersionParser;
-use Nette\Utils\Strings;
+use Entropy\Utils\Regex;
 use Rector\Jack\Exception\ShouldNotHappenException;
 
 /**
@@ -27,12 +27,12 @@ final readonly class NextVersionResolver
         $constraint = $this->versionParser->parseConstraints($composerVersion);
 
         $nextBound = $constraint->getUpperBound();
-        $matchVersion = Strings::match(
+        $matchVersion = Regex::match(
             $nextBound->getVersion(),
             '#^(?<' . self::MAJOR . '>\d+)\.(?<' . self::MINOR . '>\d+)#'
         );
 
-        if ($matchVersion === null) {
+        if ($matchVersion === []) {
             throw new ShouldNotHappenException(
                 sprintf('Unable to parse major and minor value from composer version "%s"', $composerVersion)
             );

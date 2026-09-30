@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Jack\ValueObject;
 
-use Nette\Utils\Strings;
+use Entropy\Utils\Regex;
 
 final readonly class OutdatedPackage
 {
@@ -55,8 +55,8 @@ final readonly class OutdatedPackage
             return true;
         }
 
-        $matchYears = Strings::match($this->currentVersionAge, '#[3-9] years#');
-        return $matchYears !== null;
+        $matchYears = Regex::match($this->currentVersionAge, '#[3-9] years#');
+        return $matchYears !== [];
     }
 
     public function lastestIsDevBranch(): bool

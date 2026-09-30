@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Tests\ComposerProcessor\OpenVersionsComposerProcessor;
 
-use Nette\Utils\FileSystem;
+use Entropy\Utils\FileSystem;
 use Rector\Jack\ComposerProcessor\OpenVersionsComposerProcessor;
 use Rector\Jack\Tests\AbstractTestCase;
 use Rector\Jack\ValueObject\ChangedPackageVersion;

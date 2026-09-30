@@ -6,8 +6,8 @@ namespace Rector\Jack\ComposerProcessor;
 
 use Composer\Semver\Comparator;
 use Composer\Semver\VersionParser;
-use Entropy\Attributes\RelatedTest;
-use Nette\Utils\Json;
+use Entropy\Attribute\RelatedTest;
+use Entropy\Utils\Json;
 use Rector\Jack\Composer\InstalledVersionResolver;
 use Rector\Jack\Composer\VersionComparator;
 use Rector\Jack\FileSystem\ComposerJsonPackageVersionUpdater;
@@ -27,7 +27,7 @@ final readonly class RaiseToInstalledComposerProcessor
     public function process(string $composerJsonContents): ChangedPackageVersionsResult
     {
         $installedPackagesToVersions = $this->installedVersionResolver->resolve();
-        $composerJson = Json::decode($composerJsonContents, true);
+        $composerJson = Json::decode($composerJsonContents);
 
         $changedPackageVersions = [];
 

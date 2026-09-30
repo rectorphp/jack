@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Jack\ValueObject\ComposerProcessorResult;
 
+use Entropy\Validation\Assert;
 use Rector\Jack\ValueObject\ChangedPackageVersion;
-use Webmozart\Assert\Assert;
 
 final readonly class ChangedPackageVersionsResult
 {

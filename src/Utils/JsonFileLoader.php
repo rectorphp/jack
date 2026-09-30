@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Utils;
 
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
-use Webmozart\Assert\Assert;
+use Entropy\Utils\FileSystem;
+use Entropy\Utils\Json;
+use Entropy\Validation\Assert;
 
 final class JsonFileLoader
 {
@@ -19,6 +19,6 @@ final class JsonFileLoader
 
         $fileContents = FileSystem::read($filePath);
 
-        return Json::decode($fileContents, true);
+        return Json::decode($fileContents);
     }
 }
