@@ -9,7 +9,7 @@
         "php": ">=8.4",
         "composer/semver": "^3.4",
         "entropy/entropy": "^0.4.17",
-        "symfony/process": "^8.1"
+        "symfony/process": "^6.4 || ^7.4 || ^8.1"
     },
     "require-dev": {
         "symplify/easy-coding-standard": "^13.2",
