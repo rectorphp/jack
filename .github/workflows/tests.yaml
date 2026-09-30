@@ -34,7 +34,7 @@ jobs:
                 run: vendor/bin/phpunit
 
             -   name: Smoke run CLI app
-                run: bin/jack list --ansi
+                run: bin/jack list
 
     lint:
         strategy:
