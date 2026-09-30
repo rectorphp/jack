@@ -6,17 +6,36 @@ namespace Rector\Jack\ValueObject;
 
 use Entropy\Utils\Regex;
 
-final readonly class OutdatedPackage
+final class OutdatedPackage
 {
+    private string $name;
+
+    private string $currentVersion;
+
+    private string $composerVersion;
+
+    private bool $isProd;
+
+    private string $latestVersion;
+
+    // nullable on composer 2.7-
+    private ?string $currentVersionAge;
+
     public function __construct(
-        private string $name,
-        private string $currentVersion,
-        private string $composerVersion,
-        private bool $isProd,
-        private string $latestVersion,
-        // nullable on composer 2.7-
-        private ?string $currentVersionAge,
-    ) {}
+        string $name,
+        string $currentVersion,
+        string $composerVersion,
+        bool $isProd,
+        string $latestVersion,
+        ?string $currentVersionAge
+    ) {
+        $this->name = $name;
+        $this->currentVersion = $currentVersion;
+        $this->composerVersion = $composerVersion;
+        $this->isProd = $isProd;
+        $this->latestVersion = $latestVersion;
+        $this->currentVersionAge = $currentVersionAge;
+    }
 
     public function getName(): string
     {

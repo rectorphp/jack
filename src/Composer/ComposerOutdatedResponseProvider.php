@@ -26,7 +26,10 @@ final class ComposerOutdatedResponseProvider
 
         $composerOutdatedProcess = Process::fromShellCommandline(
             'composer outdated --direct --minor-only --format json --ignore-platform-req=php',
-            timeout: 120
+            null,
+            null,
+            null,
+            120
         );
 
         $composerOutdatedProcess->mustRun();

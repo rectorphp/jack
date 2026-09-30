@@ -6,15 +6,21 @@ namespace Rector\Jack\ValueObject;
 
 use Entropy\Validation\Assert;
 
-final readonly class OutdatedComposer
+final class OutdatedComposer
 {
+    /**
+     * @var OutdatedPackage[]
+     */
+    private array $outdatedPackages;
+
     /**
      * @param OutdatedPackage[] $outdatedPackages
      */
-    public function __construct(
-        private array $outdatedPackages
-    ) {
+    public function __construct(array $outdatedPackages)
+    {
         Assert::allIsInstanceOf($outdatedPackages, OutdatedPackage::class);
+
+        $this->outdatedPackages = $outdatedPackages;
     }
 
     public function getProdPackagesCount(): int

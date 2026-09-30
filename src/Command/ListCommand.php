@@ -9,11 +9,14 @@ use Entropy\Console\Enum\ExitCode;
 use Entropy\Console\Output\HelpPrinter;
 use Entropy\Container\Container;
 
-final readonly class ListCommand implements CommandInterface
+final class ListCommand implements CommandInterface
 {
-    public function __construct(
-        private Container $container,
-    ) {}
+    private Container $container;
+
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
 
     public function run(): int
     {

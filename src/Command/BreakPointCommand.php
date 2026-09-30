@@ -13,13 +13,23 @@ use Rector\Jack\Composer\ComposerOutdatedResponseProvider;
 use Rector\Jack\Enum\ComposerKey;
 use Rector\Jack\OutdatedComposerFactory;
 
-final readonly class BreakPointCommand implements CommandInterface
+final class BreakPointCommand implements CommandInterface
 {
+    private OutdatedComposerFactory $outdatedComposerFactory;
+
+    private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider;
+
+    private OutputPrinter $outputPrinter;
+
     public function __construct(
-        private OutdatedComposerFactory $outdatedComposerFactory,
-        private ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
-        private OutputPrinter $outputPrinter,
-    ) {}
+        OutdatedComposerFactory $outdatedComposerFactory,
+        ComposerOutdatedResponseProvider $composerOutdatedResponseProvider,
+        OutputPrinter $outputPrinter
+    ) {
+        $this->outdatedComposerFactory = $outdatedComposerFactory;
+        $this->composerOutdatedResponseProvider = $composerOutdatedResponseProvider;
+        $this->outputPrinter = $outputPrinter;
+    }
 
     /**
      * @param bool $dev Focus on dev packages only
@@ -56,7 +66,9 @@ final readonly class BreakPointCommand implements CommandInterface
                         return true;
                     }
 
-                    $pageAgeInDays = new DateTimeImmutable($package['latest-release-date'])->diff($now)->days;
+                    $latestReleaseDate = new DateTimeImmutable($package['latest-release-date']);
+                    $pageAgeInDays = $latestReleaseDate->diff($now)
+                        ->days;
                     return $pageAgeInDays >= $minDays;
                 }
             ),

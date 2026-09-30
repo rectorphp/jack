@@ -7,16 +7,24 @@ namespace Rector\Jack\ValueObject\ComposerProcessorResult;
 use Entropy\Validation\Assert;
 use Rector\Jack\ValueObject\ChangedPackageVersion;
 
-final readonly class ChangedPackageVersionsResult
+final class ChangedPackageVersionsResult
 {
+    private string $composerJsonContents;
+
+    /**
+     * @var ChangedPackageVersion[]
+     */
+    private array $changedPackageVersions;
+
     /**
      * @param ChangedPackageVersion[] $changedPackageVersions
      */
-    public function __construct(
-        private string $composerJsonContents,
-        private array $changedPackageVersions,
-    ) {
+    public function __construct(string $composerJsonContents, array $changedPackageVersions)
+    {
         Assert::allIsInstanceOf($changedPackageVersions, ChangedPackageVersion::class);
+
+        $this->composerJsonContents = $composerJsonContents;
+        $this->changedPackageVersions = $changedPackageVersions;
     }
 
     public function getComposerJsonContents(): string

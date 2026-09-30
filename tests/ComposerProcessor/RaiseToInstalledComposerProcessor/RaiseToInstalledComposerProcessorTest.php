@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Jack\Tests\ComposerProcessor\RaiseToInstalledComposerProcessor;
 
 use Entropy\Utils\FileSystem;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Jack\ComposerProcessor\RaiseToInstalledComposerProcessor;
 use Rector\Jack\Tests\AbstractTestCase;
 use Rector\Jack\ValueObject\ChangedPackageVersion;
@@ -87,7 +86,9 @@ final class RaiseToInstalledComposerProcessorTest extends AbstractTestCase
         ];
     }
 
-    #[DataProvider('provideSkipSuggestChangeFiles')]
+    /**
+     * @dataProvider provideSkipSuggestChangeFiles
+     */
     public function testSkipSuggestChange(string $file, string $changedFileContent): void
     {
         $composerJsonContents = FileSystem::read($file);

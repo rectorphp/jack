@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Jack\Tests\Composer\NextVersionResolver;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Jack\Composer\NextVersionResolver;
 use Rector\Jack\Tests\AbstractTestCase;
 
@@ -19,7 +18,9 @@ final class NextVersionResolverTest extends AbstractTestCase
         $this->nextVersionResolver = $this->make(NextVersionResolver::class);
     }
 
-    #[DataProvider('provideData')]
+    /**
+     * @dataProvider provideData
+     */
     public function test(string $packageName, string $composerVersion, string $expectedVersion): void
     {
         $nextVersion = $this->nextVersionResolver->resolve($packageName, $composerVersion);

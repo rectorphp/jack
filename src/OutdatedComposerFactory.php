@@ -12,11 +12,14 @@ use Rector\Jack\ValueObject\OutdatedPackage;
 /**
  * @see \Rector\Jack\Tests\OutdatedComposerFactory\OutdatedComposerFactoryTest
  */
-final readonly class OutdatedComposerFactory
+final class OutdatedComposerFactory
 {
-    public function __construct(
-        private OutdatedPackageMapper $outdatedPackageMapper
-    ) {}
+    private OutdatedPackageMapper $outdatedPackageMapper;
+
+    public function __construct(OutdatedPackageMapper $outdatedPackageMapper)
+    {
+        $this->outdatedPackageMapper = $outdatedPackageMapper;
+    }
 
     /**
      * @param mixed[] $installedPackages

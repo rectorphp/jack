@@ -16,12 +16,17 @@ use Rector\Jack\ValueObject\ChangedPackageVersion;
 use Rector\Jack\ValueObject\ComposerProcessorResult\ChangedPackageVersionsResult;
 
 #[RelatedTest(RaiseToInstalledComposerProcessorTest::class)]
-final readonly class RaiseToInstalledComposerProcessor
+final class RaiseToInstalledComposerProcessor
 {
-    public function __construct(
-        private VersionParser $versionParser,
-        private InstalledVersionResolver $installedVersionResolver,
-    ) {}
+    private VersionParser $versionParser;
+
+    private InstalledVersionResolver $installedVersionResolver;
+
+    public function __construct(VersionParser $versionParser, InstalledVersionResolver $installedVersionResolver)
+    {
+        $this->versionParser = $versionParser;
+        $this->installedVersionResolver = $installedVersionResolver;
+    }
 
     public function process(string $composerJsonContents): ChangedPackageVersionsResult
     {
