@@ -9,14 +9,19 @@ use Rector\Jack\Utils\JsonFileLoader;
 
 final class InstalledVersionResolver
 {
+    private string $installedJsonFilePath;
+
+    public function __construct(string $installedJsonFilePath)
+    {
+        $this->installedJsonFilePath = $installedJsonFilePath;
+    }
+
     /**
      * @return array<string, string>
      */
     public function resolve(): array
     {
-        $installedJsonFilePath = getcwd() . '/vendor/composer/installed.json';
-
-        $installedJson = JsonFileLoader::loadFileToJson($installedJsonFilePath);
+        $installedJson = JsonFileLoader::loadFileToJson($this->installedJsonFilePath);
         if (! array_key_exists('packages', $installedJson)) {
             throw new ShouldNotHappenException('Missing "packages" key in "installed.json"');
         }
