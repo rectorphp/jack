@@ -2,6 +2,7 @@
     "name": "rector/jack",
     "description": "Jack helps you incrementally update your `composer.json` dependencies, ensuring your project stays current without the chaos of outdated packages",
     "license": "MIT",
+    "abandoned": "rector/swiss-knife",
     "bin": [
         "bin/jack"
     ],

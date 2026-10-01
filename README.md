@@ -1,5 +1,8 @@
 # Jack: Raise your Dependencies Safely
 
+> [!WARNING]
+> **Deprecated** - Jack has moved into [rector/swiss-knife](https://github.com/rectorphp/swiss-knife), so all commands live under one tool. Install `rector/swiss-knife` and use the `open-versions`, `breakpoint` and `raise-to-installed` commands instead.
+
 **Experimental**: Jack is an experimental project under active development. It is not yet stable, may contain bugs or undergo breaking changes. It's build it in the open with the community feedback.
 
 [![Downloads total](https://img.shields.io/packagist/dt/rector/jack.svg?style=flat-square)](https://packagist.org/packages/rector/jack/stats)
